@@ -1,0 +1,37 @@
+# Sooda — Buy & Sell in Pakistan
+
+An OLX-style classifieds marketplace. **Live demo:** open `index.html`
+— it's the entire site in one file (no build step, no server needed).
+
+## The single-file site (`index.html`)
+
+The whole marketplace — homepage with search & filters, 14 categories,
+ad detail pages with photo galleries, post-an-ad, login/signup, My Ads
+dashboard, and favorites — in one self-contained HTML file (~70KB).
+
+- Just open it in a browser, or host it anywhere static (GitHub Pages,
+  Netlify, Vercel, any shared hosting).
+- Demo login: **demo@sooda.pk** / **demo1234**
+- Ads you post are saved in the browser (localStorage). 12 demo ads are
+  baked in so it feels alive on first open.
+
+## The full-stack version (`server/`)
+
+A real Node.js + Express + SQLite backend with true user accounts
+(bcrypt), photo uploads, and a JSON API. Run it with:
+
+```bash
+npm install
+npm run seed   # adds 12 demo ads (categories auto-create)
+npm start      # → http://localhost:3000
+```
+
+Production notes: set a real `SESSION_SECRET` env var, swap the
+in-memory session store for Redis/SQLite store, serve over HTTPS, and
+back up `sooda.db` regularly.
+
+## Deploying the single-file site to GitHub Pages
+
+1. Push this repo to GitHub (public).
+2. Repo → Settings → Pages → Deploy from branch → `main`, folder `/ (root)`.
+3. Your site is live at `https://<username>.github.io/sooda/`.

@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sooda — Buy & Sell in Pakistan</title>
+<meta name="description" content="Sooda is Pakistan's friendly marketplace. Buy and sell mobiles, cars, property, electronics and more.">
+<style>
+/* Sooda — design system */
+:root {
+  --green-900: #0b3d2e;
+  --green-700: #0e5c46;
+  --green-600: #12805f;
+  --green-100: #dcf0e7;
+  --amber-500: #f2a007;
+  --amber-600: #d98a00;
+  --ink: #1c2420;
+  --muted: #66756f;
+  --line: #e3e9e5;
+  --bg: #f4f6f4;
+  --card: #ffffff;
+  --danger: #c0392b;
+  --radius: 12px;
+  --shadow: 0 2px 10px rgba(11, 61, 46, 0.08);
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+/* ---------- header ---------- */
+.site-header {
+  background: var(--green-900);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+  white-space: nowrap;
+}
+.logo span { color: var(--amber-500); }
+.searchbar {
+  flex: 1;
+  display: flex;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 0;
+}
+.searchbar select {
+  border: none;
+  background: var(--green-100);
+  padding: 0 10px;
+  font-size: 14px;
+  max-width: 150px;
+  color: var(--green-900);
+  outline: none;
+}
+.searchbar input {
+  flex: 1;
+  border: none;
+  padding: 11px 12px;
+  font-size: 15px;
+  outline: none;
+  min-width: 0;
+}
+.searchbar button {
+  border: none;
+  background: var(--amber-500);
+  color: #231a00;
+  font-weight: 700;
+  padding: 0 22px;
+  cursor: pointer;
+  font-size: 15px;
+}
+.searchbar button:hover { background: var(--amber-600); }
+.nav-links { display: flex; align-items: center; gap: 14px; white-space: nowrap; }
+.nav-links a { font-size: 14px; color: #dcebe3; }
+.nav-links a:hover { color: #fff; }
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #fff;
+}
+.user-chip .avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--amber-500);
+  color: #231a00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+.sell-btn {
+  background: var(--amber-500);
+  color: #231a00 !important;
+  font-weight: 800;
+  padding: 9px 26px;
+  border-radius: 8px;
+  border-bottom: 3px solid var(--amber-600);
+}
+.sell-btn:hover { background: #ffbb33; }
+
+/* ---------- hero ---------- */
+.hero {
+  background: linear-gradient(135deg, var(--green-900), var(--green-600));
+  color: #fff;
+  padding: 44px 0 36px;
+  text-align: center;
+}
+.hero h1 { font-size: 34px; margin-bottom: 6px; letter-spacing: -0.5px; }
+.hero p { color: #cfe6da; margin-bottom: 20px; }
+.hero .stats {
+  display: flex;
+  justify-content: center;
+  gap: 34px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.hero .stats b { display: block; font-size: 22px; color: var(--amber-500); }
+.hero .stats small { color: #bcd8c9; }
+
+/* ---------- categories ---------- */
+.section { padding: 30px 0 8px; }
+.section h2 { font-size: 22px; margin-bottom: 14px; }
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+.cat-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 8px;
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.cat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--green-600);
+}
+.cat-card svg { width: 34px; height: 34px; color: var(--green-700); }
+.cat-card div { font-size: 13px; margin-top: 8px; font-weight: 600; }
+
+/* ---------- ad cards ---------- */
+.ads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  padding-bottom: 30px;
+}
+.ad-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.ad-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.ad-card .thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--green-100);
+  overflow: hidden;
+}
+.ad-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.ad-card .body { padding: 12px 14px 14px; }
+.ad-card .price { font-size: 19px; font-weight: 800; color: var(--green-900); }
+.ad-card .price .neg {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--amber-600);
+  margin-left: 6px;
+}
+.ad-card .title {
+  font-size: 14px;
+  margin: 4px 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ad-card .meta { font-size: 12px; color: var(--muted); }
+.fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.fav-btn.active { color: #e11d48; }
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--green-100);
+  color: var(--green-700);
+  text-transform: uppercase;
+}
+.badge.sold { background: #fde2e2; color: var(--danger); }
+
+/* ---------- browse layout ---------- */
+.browse { display: flex; gap: 20px; align-items: flex-start; }
+.filters {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  position: sticky;
+  top: 70px;
+}
+.filters h3 { font-size: 15px; margin-bottom: 12px; }
+.filters label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 12px 0 4px;
+  text-transform: uppercase;
+}
+.filters input, .filters select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+}
+.price-row { display: flex; gap: 8px; }
+.results { flex: 1; min-width: 0; }
+.results-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.results-head select {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+/* ---------- ad detail ---------- */
+.ad-detail {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  padding: 24px 0 40px;
+  align-items: start;
+}
+.gallery {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.gallery .main {
+  aspect-ratio: 4 / 3;
+  background: #0d1512;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery .main img { max-height: 100%; object-fit: contain; }
+.gallery .thumbs { display: flex; gap: 8px; padding: 10px; }
+.gallery .thumbs img {
+  width: 74px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.gallery .thumbs img.sel { border-color: var(--amber-500); }
+.detail-box {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 16px;
+}
+.detail-box h3 { font-size: 17px; margin-bottom: 10px; }
+.spec { display: flex; justify-content: space-between; padding: 7px 0;
+  border-bottom: 1px solid var(--line); font-size: 14px; }
+.spec:last-child { border-bottom: none; }
+.spec span:first-child { color: var(--muted); }
+.sidebar .price-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.sidebar .price { font-size: 30px; font-weight: 800; color: var(--green-900); }
+.sidebar .ad-title { font-size: 16px; margin: 6px 0 4px; }
+.sidebar .loc { font-size: 13px; color: var(--muted); }
+.seller-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 14px;
+  text-align: center;
+}
+.seller-card .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--green-700);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+.action-row { display: flex; gap: 10px; margin-top: 14px; }
+
+/* ---------- buttons & forms ---------- */
+.btn {
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 11px 22px;
+  border-radius: 8px;
+  background: var(--green-700);
+  color: #fff;
+  text-align: center;
+}
+.btn:hover { background: var(--green-600); }
+.btn.amber { background: var(--amber-500); color: #231a00; }
+.btn.amber:hover { background: var(--amber-600); }
+.btn.ghost { background: #fff; color: var(--green-700);
+  border: 1.5px solid var(--green-700); }
+.btn.danger { background: var(--danger); }
+.btn.block { width: 100%; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.form-card {
+  max-width: 560px;
+  margin: 34px auto 50px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+.form-card.wide { max-width: 760px; }
+.form-card h2 { margin-bottom: 4px; }
+.form-card .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--green-600);
+}
+.field textarea { min-height: 120px; resize: vertical; }
+.field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.check-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.check-row input { width: auto; }
+.form-err {
+  background: #fde2e2;
+  color: var(--danger);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+.img-preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.img-preview img {
+  width: 90px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+/* ---------- my ads table ---------- */
+.myad {
+  display: flex;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+.myad img { width: 110px; height: 84px; object-fit: cover; border-radius: 8px; }
+.myad .info { flex: 1; min-width: 0; }
+.myad .info b { display: block; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; }
+.myad .info small { color: var(--muted); }
+.myad .actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn.sm { padding: 7px 14px; font-size: 13px; }
+
+/* ---------- footer ---------- */
+.site-footer {
+  background: var(--green-900);
+  color: #bcd8c9;
+  margin-top: 40px;
+  padding: 34px 0 20px;
+  font-size: 14px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.site-footer h4 { color: #fff; margin-bottom: 10px; font-size: 15px; }
+.site-footer a { display: block; margin-bottom: 6px; }
+.site-footer a:hover { color: #fff; }
+.copyright {
+  text-align: center;
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 13px;
+}
+
+/* ---------- toast ---------- */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s;
+  z-index: 100;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 860px) {
+  .ad-detail { grid-template-columns: 1fr; }
+  .browse { flex-direction: column; }
+  .filters { width: 100%; position: static; }
+  .header-inner { flex-wrap: wrap; }
+  .searchbar { order: 3; flex-basis: 100%; }
+  .hero h1 { font-size: 26px; }
+  .field-row { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* Sooda single-file app — all logic. DB + IMG are injected at build time. */
+const DB = {"categories":[{"id":9,"name":"Animals","slug":"animals","icon":"paw"},{"id":6,"name":"Bikes","slug":"bikes","icon":"bike"},{"id":10,"name":"Books, Sports & Hobbies","slug":"hobbies","icon":"book"},{"id":13,"name":"Business & Agriculture","slug":"business","icon":"factory"},{"id":5,"name":"Electronics & Appliances","slug":"electronics","icon":"tv"},{"id":8,"name":"Fashion & Beauty","slug":"fashion","icon":"shirt"},{"id":7,"name":"Furniture & Home Decor","slug":"furniture","icon":"sofa"},{"id":11,"name":"Jobs","slug":"jobs","icon":"briefcase"},{"id":14,"name":"Kids","slug":"kids","icon":"blocks"},{"id":1,"name":"Mobiles","slug":"mobiles","icon":"mobile"},{"id":4,"name":"Property for Rent","slug":"property-rent","icon":"key"},{"id":3,"name":"Property for Sale","slug":"property-sale","icon":"house"},{"id":12,"name":"Services","slug":"services","icon":"wrench"},{"id":2,"name":"Vehicles","slug":"vehicles","icon":"car"}],"locations":["Karachi","Lahore","Islamabad","Rawalpindi","Faisalabad","Multan","Peshawar","Quetta","Hyderabad","Sialkot"],"ads":[{"id":8,"title":"7-seater L-shape sofa set, imported fabric","description":"Solid sheesham frame, 10-year frame warranty. Barely used in guest room. Color: beige. Delivery available in city.","price":78000,"negotiable":1,"condition":"used","location":"Multan","views":160,"created_at":"2026-10-09 07:32:30","status":"active","sellerName":"Ahmed Raza","category":{"id":7,"name":"Furniture & Home Decor","slug":"furniture"},"images":["img_ad8_1","img_ad8_2"]},{"id":9,"title":"Persian kitten — triple coat, litter trained","description":"2 months old, healthy and playful. Litter trained, dewormed. Parents on spot. Home delivery in Karachi.","price":45000,"negotiable":0,"condition":"new","location":"Karachi","views":176,"created_at":"2026-10-09 07:32:30","status":"active","sellerName":"Ahmed Raza","category":{"id":9,"name":"Animals","slug":"animals"},"images":["img_ad9_1","img_ad9_2"]},{"id":10,"title":"MacBook Air M2, 8/256, space grey","description":"Cycle count 41 only. With original 35W charger and box. No dents or scratches — used with hard shell since day one.","price":285000,"negotiable":0,"condition":"used","location":"Islamabad","views":193,"created_at":"2026-10-09 07:32:30","status":"active","sellerName":"Ahmed Raza","category":{"id":5,"name":"Electronics & Appliances","slug":"electronics"},"images":["img_ad10_1","img_ad10_2"]},{"id":11,"title":"Bridal lehenga — barely worn, designer replica","description":"Worn once at wedding. Heavy dabka and kora work, cancan attached. Size medium, adjustable. Original price 210k.","price":120000,"negotiable":1,"condition":"used","location":"Lahore","views":210,"created_at":"2026-10-09 07:32:30","status":"active","sellerName":"Ahmed Raza","category":{"id":8,"name":"Fashion & Beauty","slug":"fashion"},"images":["img_ad11_1","img_ad11_2"]},{"id":12,"title":"Office table + ergonomic chair combo","description":"Brand new office setup — 4ft laminated top table with cable manager and ergonomic revolving chair. Bulk quantity available for offices.","price":32000,"negotiable":1,"condition":"new","location":"Peshawar","views":227,"created_at":"2026-10-09 07:32:30","status":"active","sellerName":"Ahmed Raza","category":{"id":7,"name":"Furniture & Home Decor","slug":"furniture"},"images":["img_ad12_1","img_ad12_2"]},{"id":3,"title":"Toyota Corolla Grande 1.8, 2021 model","description":"First owner, driven 42,000 km. Total genuine paint, maintained at Toyota dealership. Token tax paid, biometric available.","price":6850000,"negotiable":0,"condition":"used","location":"Islamabad","views":74,"created_at":"2026-10-09 07:32:29","status":"active","sellerName":"Ahmed Raza","category":{"id":2,"name":"Vehicles","slug":"vehicles"},"images":["img_ad3_1","img_ad3_2"]},{"id":4,"title":"Honda CG 125S, 2023 — self start, red","description":"Self-start model, only 9,000 km driven. New tyres, original documents, no work required.","price":235000,"negotiable":1,"condition":"used","location":"Rawalpindi","views":91,"created_at":"2026-10-09 07:32:29","status":"active","sellerName":"Ahmed Raza","category":{"id":6,"name":"Bikes","slug":"bikes"},"images":["img_ad4_1","img_ad4_2"]},{"id":5,"title":"5 Marla brand new house, DHA Phase 6","description":"Solid construction, A+ grade material. 4 bedrooms with attached baths, powder room, mumty. Near park and commercial. Clear title.","price":28500000,"negotiable":0,"condition":"new","location":"Lahore","views":108,"created_at":"2026-10-09 07:32:29","status":"active","sellerName":"Ahmed Raza","category":{"id":3,"name":"Property for Sale","slug":"property-sale"},"images":["img_ad5_1","img_ad5_2"]},{"id":6,"title":"2 bed luxury apartment for rent, Clifton Block 5","description":"West-open, ventilated apartment on 3rd floor. Standby generator, covered parking, 24/7 security. Family preferred.","price":65000,"negotiable":0,"condition":"used","location":"Karachi","views":125,"created_at":"2026-10-09 07:32:29","status":"active","sellerName":"Ahmed Raza","category":{"id":4,"name":"Property for Rent","slug":"property-rent"},"images":["img_ad6_1","img_ad6_2"]},{"id":7,"title":"Dawlance 1.5 ton inverter AC, heat & cool","description":"Hardly used for one season. Cooling is perfect, remote and warranty card available. Reason for selling: shifting abroad.","price":95000,"negotiable":1,"condition":"used","location":"Faisalabad","views":142,"created_at":"2026-10-09 07:32:29","status":"active","sellerName":"Ahmed Raza","category":{"id":5,"name":"Electronics & Appliances","slug":"electronics"},"images":["img_ad7_1","img_ad7_2"]},{"id":1,"title":"iPhone 13 Pro 256GB — Sierra Blue, PTA approved","description":"PTA approved, battery health 89%. Box and original charger included. No scratches, always used with case and protector. Serious buyers only.","price":185000,"negotiable":0,"condition":"used","location":"Karachi","views":40,"created_at":"2026-10-09 07:32:28","status":"active","sellerName":"Ahmed Raza","category":{"id":1,"name":"Mobiles","slug":"mobiles"},"images":["img_ad1_1","img_ad1_2"]},{"id":2,"title":"Samsung Galaxy S23 5G, 8/256, official warranty","description":"Official Samsung Pakistan warranty till March 2027. Mint condition, single hand used. Complete accessories with box.","price":165000,"negotiable":1,"condition":"used","location":"Lahore","views":57,"created_at":"2026-10-09 07:32:28","status":"active","sellerName":"Ahmed Raza","category":{"id":1,"name":"Mobiles","slug":"mobiles"},"images":["img_ad2_1","img_ad2_2"]}]};
+const IMG = {"img_ad1_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwZjc2NmUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNGI4YTYiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+STwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+bW9iaWxlczwvdGV4dD4KPC9zdmc+","img_ad1_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwZTc0OTAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyMmQzZWUiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+STwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+bW9iaWxlczwvdGV4dD4KPC9zdmc+","img_ad10_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxNTVlNzUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzOGJkZjgiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TTwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZWxlY3Ryb25pY3M8L3RleHQ+Cjwvc3ZnPg==","img_ad10_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM3YzNhZWQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNhNzhiZmEiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TTwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZWxlY3Ryb25pY3M8L3RleHQ+Cjwvc3ZnPg==","img_ad11_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM4MzE4NDMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmNDcyYjYiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QjwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZmFzaGlvbjwvdGV4dD4KPC9zdmc+","img_ad11_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiNDUzMDkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYmJmMjQiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QjwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZmFzaGlvbjwvdGV4dD4KPC9zdmc+","img_ad12_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzNjUzMTQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiZWYyNjQiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TzwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZnVybml0dXJlPC90ZXh0Pgo8L3N2Zz4=","img_ad12_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiZTEyM2MiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYjcxODUiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TzwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZnVybml0dXJlPC90ZXh0Pgo8L3N2Zz4=","img_ad2_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZDRlZDgiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM2MGE1ZmEiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UzwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+bW9iaWxlczwvdGV4dD4KPC9zdmc+","img_ad2_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM0ZDdjMGYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNhM2U2MzUiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UzwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+bW9iaWxlczwvdGV4dD4KPC9zdmc+","img_ad3_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM3YzNhZWQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNhNzhiZmEiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+dmVoaWNsZXM8L3RleHQ+Cjwvc3ZnPg==","img_ad3_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM2ZDI4ZDkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjNGI1ZmQiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+dmVoaWNsZXM8L3RleHQ+Cjwvc3ZnPg==","img_ad4_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiNDUzMDkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYmJmMjQiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+YmlrZXM8L3RleHQ+Cjwvc3ZnPg==","img_ad4_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM5YTM0MTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYjkyM2MiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+YmlrZXM8L3RleHQ+Cjwvc3ZnPg==","img_ad5_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiZTEyM2MiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYjcxODUiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+NTwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+cHJvcGVydHkgc2FsZTwvdGV4dD4KPC9zdmc+","img_ad5_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxNTVlNzUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzOGJkZjgiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+NTwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+cHJvcGVydHkgc2FsZTwvdGV4dD4KPC9zdmc+","img_ad6_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwZTc0OTAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyMmQzZWUiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MjwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+cHJvcGVydHkgcmVudDwvdGV4dD4KPC9zdmc+","img_ad6_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM4MzE4NDMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmNDcyYjYiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MjwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+cHJvcGVydHkgcmVudDwvdGV4dD4KPC9zdmc+","img_ad7_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM0ZDdjMGYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNhM2U2MzUiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZWxlY3Ryb25pY3M8L3RleHQ+Cjwvc3ZnPg==","img_ad7_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzNjUzMTQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiZWYyNjQiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZWxlY3Ryb25pY3M8L3RleHQ+Cjwvc3ZnPg==","img_ad8_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM2ZDI4ZDkiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjNGI1ZmQiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+NzwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZnVybml0dXJlPC90ZXh0Pgo8L3N2Zz4=","img_ad8_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwZjc2NmUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxNGI4YTYiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+NzwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ZnVybml0dXJlPC90ZXh0Pgo8L3N2Zz4=","img_ad9_1":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM5YTM0MTIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYjkyM2MiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+YW5pbWFsczwvdGV4dD4KPC9zdmc+","img_ad9_2":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZDRlZDgiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM2MGE1ZmEiLz4KICA8L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0idXJsKCNnKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjI3MCIgcj0iMTIwIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTgiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjMyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTMwIgogICAgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UDwvdGV4dD4KICA8dGV4dCB4PSI0MDAiIHk9IjQ4MCIgZm9udC1mYW1pbHk9IlZlcmRhbmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNCIKICAgIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC45MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+YW5pbWFsczwvdGV4dD4KPC9zdmc+"};
+
+/* ---------- helpers ---------- */
+const esc = (s) => String(s == null ? '' : s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const fmtPrice = (n) => 'Rs ' + Number(n).toLocaleString('en-PK');
+function timeAgo(iso) {
+  const s = Math.floor((Date.now() - new Date(String(iso).replace(' ', 'T') + 'Z').getTime()) / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + ' min ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + ' hours ago';
+  const d = Math.floor(h / 24);
+  if (d < 30) return d + (d === 1 ? ' day ago' : ' days ago');
+  return Math.floor(d / 30) + ' months ago';
+}
+let toastTimer;
+function toast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+const ICONS = {
+  mobile: '<rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/>',
+  car: '<path d="M3 16v-4l2-5a2 2 0 0 1 1.9-1.3h10.2A2 2 0 0 1 19 7l2 5v4"/><circle cx="7.5" cy="16" r="1.8"/><circle cx="16.5" cy="16" r="1.8"/>',
+  house: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><rect x="10" y="14" width="4" height="6"/>',
+  key: '<circle cx="8" cy="8" r="4"/><line x1="11" y1="11" x2="20" y2="20"/>',
+  tv: '<rect x="2" y="4" width="20" height="13" rx="2"/><line x1="12" y1="17" x2="12" y2="21"/>',
+  bike: '<circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8"/>',
+  sofa: '<path d="M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M2 11a2 2 0 0 1 4 0v1h12v-1a2 2 0 0 1 4 0v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>',
+  shirt: '<path d="M9 3L3 7l2.5 3L9 8v13h6V8l3.5 2L21 7l-6-4a3 3 0 0 1-6 0z"/>',
+  paw: '<circle cx="7" cy="9" r="1.8"/><circle cx="12" cy="7" r="1.8"/><circle cx="17" cy="9" r="1.8"/><path d="M12 11c-3 0-5.5 2.5-5.5 5.2 0 1.6 1.2 2.8 2.8 2.8 1 0 1.8-.5 2.7-.5s1.7.5 2.7.5c1.6 0 2.8-1.2 2.8-2.8C17.5 13.5 15 11 12 11z"/>',
+  book: '<path d="M4 4a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 1 2-2h13"/>',
+  briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>',
+  wrench: '<path d="M14.5 6.5a4.5 4.5 0 0 0-6 6L3 18l3 3 5.5-5.5a4.5 4.5 0 0 0 6-6L14 13l-3-3z"/>',
+  factory: '<path d="M3 21V10l5 3v-3l5 3V7l4 2.5V21z"/>',
+  blocks: '<rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/><rect x="8" y="3" width="8" height="8" rx="1"/>',
+};
+const icon = (n) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;color:#0e5c46">${ICONS[n] || ICONS.blocks}</svg>`;
+
+/* ---------- local store (replaces the server) ---------- */
+const LS = {
+  read(k, d) { try { const v = localStorage.getItem('sooda_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  write(k, v) { try { localStorage.setItem('sooda_' + k, JSON.stringify(v)); } catch (e) { toast('Browser storage is full'); } },
+};
+const DEMO_USER = { name: 'Ahmed Raza', email: 'demo@sooda.pk', phone: '0300-1234567', pass: 'demo1234' };
+if (!LS.read('users', null)) LS.write('users', [DEMO_USER]);
+
+const currentUser = () => {
+  const email = LS.read('session', null);
+  return LS.read('users', []).find((u) => u.email === email) || null;
+};
+const allAds = () => {
+  const mine = LS.read('myads', []);
+  const deleted = LS.read('deleted', []);
+  return DB.ads.filter((a) => !deleted.includes(String(a.id))).concat(mine);
+};
+const getAd = (id) => allAds().find((a) => String(a.id) === String(id));
+const adSeller = (ad) => {
+  if (ad.sellerEmail) {
+    const u = LS.read('users', []).find((x) => x.email === ad.sellerEmail);
+    if (u) return u;
+  }
+  return { name: ad.sellerName || 'Sooda Seller', phone: '0300-0000000' };
+};
+const adViews = (ad) => (ad.views || 0) + (LS.read('views', {})[String(ad.id)] || 0);
+const isFav = (id) => {
+  const u = currentUser();
+  return u ? (LS.read('favs', {})[u.email] || []).includes(String(id)) : false;
+};
+function toggleFav(id) {
+  const u = currentUser();
+  if (!u) { location.hash = '#/login?next=' + encodeURIComponent(location.hash); return false; }
+  const favs = LS.read('favs', {});
+  const list = favs[u.email] || [];
+  const sid = String(id);
+  favs[u.email] = list.includes(sid) ? list.filter((x) => x !== sid) : list.concat([sid]);
+  LS.write('favs', favs);
+  return favs[u.email].includes(sid);
+}
+
+/* ---------- header / footer ---------- */
+function headerHtml() {
+  const u = currentUser();
+  const authArea = u
+    ? `<a href="#/favorites">Favorites</a><a href="#/my-ads">My Ads</a>
+       <span class="user-chip"><span class="avatar">${esc(u.name[0].toUpperCase())}</span>${esc(u.name.split(' ')[0])}</span>
+       <a href="#" id="logout-link">Logout</a>`
+    : `<a href="#/login">Login</a><a href="#/signup">Sign up</a>`;
+  return `<header class="site-header"><div class="header-inner">
+    <a class="logo" href="#/">Sooda<span>.</span></a>
+    <form class="searchbar" id="search-form">
+      <select id="search-loc"><option value="">All Pakistan</option>
+      ${DB.locations.map((l) => `<option ${filters.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
+      <input id="search-q" placeholder="Find cars, mobiles, property..." value="${esc(filters.q || '')}">
+      <button type="submit">Search</button>
+    </form>
+    <nav class="nav-links">${authArea}<a class="sell-btn" href="#/post">+ SELL</a></nav>
+  </div></header>`;
+}
+function footerHtml() {
+  return `<footer class="site-footer"><div class="footer-grid">
+    <div><h4>Sooda.</h4><p>Pakistan's friendly marketplace. Buy and sell mobiles, cars, property and more.</p></div>
+    <div><h4>Marketplace</h4>${DB.categories.slice(0, 4).map((c) => `<a href="#/" data-cat="${c.slug}">${esc(c.name)}</a>`).join('')}</div>
+    <div><h4>Sell</h4><a href="#/post">Post a free ad</a><a href="#/my-ads">My ads</a><a href="#/favorites">Favorites</a></div>
+    <div><h4>Account</h4><a href="#/login">Login</a><a href="#/signup">Sign up</a></div>
+  </div><div class="copyright">© 2026 Sooda · Single-file demo — your ads are saved in this browser.</div></footer>`;
+}
+function bindCommon() {
+  const sf = document.getElementById('search-form');
+  if (sf) sf.addEventListener('submit', (e) => {
+    e.preventDefault();
+    filters.q = document.getElementById('search-q').value.trim();
+    filters.location = document.getElementById('search-loc').value;
+    location.hash = '#/';
+  });
+  const lo = document.getElementById('logout-link');
+  if (lo) lo.addEventListener('click', (e) => { e.preventDefault(); LS.write('session', null); navigate(); });
+  document.querySelectorAll('[data-cat]').forEach((a) => a.addEventListener('click', () => {
+    filters = { q: '', category: a.dataset.cat, location: '', condition: 'any', min: '', max: '', sort: 'newest' };
+  }));
+}
+// Favorite buttons: delegated once on #app (which persists across renders).
+function bindFavDelegation() {
+  document.getElementById('app').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-fav]');
+    if (!btn) return;
+    e.preventDefault();
+    const added = toggleFav(btn.dataset.fav);
+    if (added === false && !currentUser()) return;
+    btn.classList.toggle('active', added);
+    btn.textContent = added ? '♥' : '♡';
+    if (added) toast('Saved to favorites');
+    if (btn.dataset.favPage === '1' && !added) setTimeout(navigate, 350);
+  });
+}
+
+/* ---------- router ---------- */
+let filters = { q: '', category: '', location: '', condition: 'any', min: '', max: '', sort: 'newest' };
+function parseHash() {
+  const h = location.hash.replace(/^#\/?/, '');
+  const qi = h.indexOf('?');
+  return { path: qi === -1 ? h : h.slice(0, qi), params: new URLSearchParams(qi === -1 ? '' : h.slice(qi + 1)) };
+}
+const routes = {};
+function navigate() {
+  const { path, params } = parseHash();
+  const view = routes[path] || routes[''];
+  window.scrollTo(0, 0);
+  document.getElementById('app').innerHTML = headerHtml() + view.html(params) + footerHtml();
+  bindCommon();
+  if (view.bind) view.bind(params);
+}
+window.addEventListener('hashchange', navigate);
+
+function adCard(a) {
+  const fav = isFav(a.id);
+  const thumb = a.images[0] ? `<img src="${IMG[a.images[0]] || a.images[0]}" alt="" loading="lazy">` : '';
+  return `<div class="ad-card">
+    <button class="fav-btn${fav ? ' active' : ''}" data-fav="${a.id}">${fav ? '♥' : '♡'}</button>
+    <a href="#/ad?id=${a.id}"><div class="thumb">${thumb}</div>
+    <div class="body"><div class="price">${fmtPrice(a.price)}${a.negotiable ? '<span class="neg">Negotiable</span>' : ''}</div>
+    <div class="title">${esc(a.title)}</div>
+    <div class="meta">${esc(a.location)} · ${timeAgo(a.created_at)}</div></div></a></div>`;
+}
+
+/* ---------- home ---------- */
+routes[''] = {
+  html() {
+    const cats = DB.categories.map((c) =>
+      `<a class="cat-card" href="#/" data-catlink="${c.slug}">${icon(c.icon)}<div>${esc(c.name)}</div></a>`).join('');
+    return `<section class="hero"><div class="wrap">
+      <h1>Buy and sell anything, anywhere in Pakistan</h1>
+      <p>Post your ad for free — reach millions of buyers in your city.</p>
+      <a class="btn amber" href="#/post">+ Post a Free Ad</a>
+      <div class="stats"><div><b>${allAds().length * 137}</b><small>Live ads</small></div>
+      <div><b>${DB.categories.length}</b><small>Categories</small></div>
+      <div><b>100%</b><small>Free to post</small></div></div></div></section>
+    <main class="wrap"><section class="section"><h2>Browse categories</h2>
+      <div class="cat-grid">${cats}</div></section>
+    <section class="section"><div class="browse">
+      <aside class="filters"><h3>Filters</h3>
+        <label>Category</label><select id="f-category"><option value="">All categories</option>
+        ${DB.categories.map((c) => `<option value="${c.slug}" ${filters.category === c.slug ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+        <label>Location</label><select id="f-location"><option value="">All Pakistan</option>
+        ${DB.locations.map((l) => `<option ${filters.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
+        <label>Condition</label><select id="f-condition">
+        <option value="any"${filters.condition === 'any' ? ' selected' : ''}>Any</option>
+        <option value="new"${filters.condition === 'new' ? ' selected' : ''}>New</option>
+        <option value="used"${filters.condition === 'used' ? ' selected' : ''}>Used</option></select>
+        <label>Price range (Rs)</label><div class="price-row">
+        <input id="f-min" type="number" placeholder="Min" value="${esc(filters.min)}">
+        <input id="f-max" type="number" placeholder="Max" value="${esc(filters.max)}"></div>
+        <button class="btn block" id="f-apply" style="margin-top:16px">Apply</button>
+        <button class="btn ghost block" id="f-clear" style="margin-top:8px">Clear</button>
+      </aside>
+      <div class="results"><div class="results-head"><h2 id="results-title"></h2>
+        <select id="sort">
+        <option value="newest"${filters.sort === 'newest' ? ' selected' : ''}>Newest first</option>
+        <option value="price_asc"${filters.sort === 'price_asc' ? ' selected' : ''}>Price: low to high</option>
+        <option value="price_desc"${filters.sort === 'price_desc' ? ' selected' : ''}>Price: high to low</option></select></div>
+        <div class="ads-grid" id="ads-grid"></div>
+      </div></div></section></main>`;
+  },
+  bind() {
+    document.querySelectorAll('[data-catlink]').forEach((a) => a.addEventListener('click', () => {
+      filters = { q: '', category: a.dataset.catlink, location: '', condition: 'any', min: '', max: '', sort: 'newest' };
+    }));
+    const render = () => {
+      const f = filters;
+      let list = allAds().filter((a) => (a.status || 'active') === 'active');
+      if (f.q) { const q = f.q.toLowerCase(); list = list.filter((a) => (a.title + ' ' + a.description).toLowerCase().includes(q)); }
+      if (f.category) list = list.filter((a) => a.category.slug === f.category);
+      if (f.location) list = list.filter((a) => a.location === f.location);
+      if (f.condition !== 'any') list = list.filter((a) => a.condition === f.condition);
+      if (f.min !== '') list = list.filter((a) => a.price >= Number(f.min));
+      if (f.max !== '') list = list.filter((a) => a.price <= Number(f.max));
+      list.sort((a, b) => f.sort === 'price_asc' ? a.price - b.price : f.sort === 'price_desc' ? b.price - a.price : 0);
+      const grid = document.getElementById('ads-grid');
+      grid.innerHTML = list.length ? list.map(adCard).join('')
+        : `<div class="empty" style="grid-column:1/-1"><h3>No ads found</h3><p>Try a different search or clear the filters.</p></div>`;
+      const cat = DB.categories.find((c) => c.slug === f.category);
+      document.getElementById('results-title').textContent =
+        f.q ? `Results for "${f.q}" (${list.length})` : cat ? `${cat.name} (${list.length})` : `Fresh recommendations (${list.length})`;
+    };
+    document.getElementById('f-apply').addEventListener('click', () => {
+      filters.category = document.getElementById('f-category').value;
+      filters.location = document.getElementById('f-location').value;
+      filters.condition = document.getElementById('f-condition').value;
+      filters.min = document.getElementById('f-min').value;
+      filters.max = document.getElementById('f-max').value;
+      render();
+    });
+    document.getElementById('f-clear').addEventListener('click', () => {
+      filters = { q: '', category: '', location: '', condition: 'any', min: '', max: '', sort: 'newest' };
+      navigate();
+    });
+    document.getElementById('sort').addEventListener('change', (e) => { filters.sort = e.target.value; render(); });
+    render();
+  },
+};
+
+/* ---------- ad detail ---------- */
+routes['ad'] = {
+  html(params) {
+    const ad = getAd(params.get('id'));
+    if (!ad) return `<main class="wrap"><div class="empty" style="margin:30px 0"><h3>Ad not found</h3><a class="btn" href="#/">Back to home</a></div></main>`;
+    const u = currentUser();
+    const views = LS.read('views', {});
+    views[String(ad.id)] = (views[String(ad.id)] || 0) + 1;
+    LS.write('views', views);
+    const imgs = ad.images.map((k) => IMG[k] || k).filter(Boolean);
+    const thumbs = imgs.map((src, i) => `<img src="${src}" class="${i === 0 ? 'sel' : ''}" alt="">`).join('');
+    const seller = adSeller(ad);
+    const mine = u && ad.sellerEmail && ad.sellerEmail === u.email;
+    const fav = isFav(ad.id);
+    const similar = allAds().filter((a) => String(a.id) !== String(ad.id) && a.category.slug === ad.category.slug).slice(0, 4);
+    return `<main class="wrap"><div class="ad-detail"><div>
+      <div class="gallery"><div class="main">${imgs[0] ? `<img id="main-img" src="${imgs[0]}" alt="">` : ''}</div>
+      ${thumbs ? `<div class="thumbs" id="thumbs">${thumbs}</div>` : ''}</div>
+      <div class="detail-box"><h3>Details</h3>
+      <div class="spec"><span>Category</span><b>${esc(ad.category.name)}</b></div>
+      <div class="spec"><span>Condition</span><b>${ad.condition === 'new' ? 'New' : 'Used'}</b></div>
+      <div class="spec"><span>Location</span><b>${esc(ad.location)}</b></div>
+      <div class="spec"><span>Posted</span><b>${timeAgo(ad.created_at)}</b></div>
+      <div class="spec"><span>Views</span><b>${adViews(ad)}</b></div>
+      <div class="spec"><span>Ad ID</span><b>${ad.id}</b></div></div>
+      <div class="detail-box"><h3>Description</h3><p style="white-space:pre-wrap">${esc(ad.description)}</p></div>
+    </div><div class="sidebar"><div class="price-card">
+      <div class="price">${fmtPrice(ad.price)}</div>
+      <div class="ad-title">${esc(ad.title)}</div>
+      <div class="loc">${esc(ad.location)} · ${timeAgo(ad.created_at)}</div>
+      <div class="action-row"><button class="btn ghost block${fav ? ' active' : ''}" id="fav-toggle" data-fav="${ad.id}" data-fav-page="0">${fav ? '♥ Saved' : '♡ Save'}</button></div>
+      ${mine ? `<div class="action-row"><a class="btn ghost block" href="#/post?edit=${ad.id}">Edit</a></div>` : ''}
+    </div><div class="seller-card"><div class="avatar">${esc(seller.name[0].toUpperCase())}</div>
+      <b>${esc(seller.name)}</b><div style="color:#66756f;font-size:13px;margin-bottom:12px">Seller</div>
+      ${u ? `<button class="btn amber block" id="show-phone">Show phone number</button>
+        <div id="phone-num" style="display:none;font-size:22px;font-weight:800;margin-top:10px">${esc(seller.phone)}</div>`
+        : `<a class="btn amber block" href="#/login?next=${encodeURIComponent(location.hash)}">Login to see phone</a>`}
+    </div></div></div>
+    ${similar.length ? `<section class="section"><h2>Similar ads</h2><div class="ads-grid">${similar.map(adCard).join('')}</div></section>` : ''}
+    </main>`;
+  },
+  bind() {
+    const main = document.getElementById('main-img');
+    const th = document.getElementById('thumbs');
+    if (th && main) th.querySelectorAll('img').forEach((t) => t.addEventListener('click', () => {
+      th.querySelectorAll('img').forEach((x) => x.classList.remove('sel'));
+      t.classList.add('sel'); main.src = t.src;
+    }));
+    const sp = document.getElementById('show-phone');
+    if (sp) sp.addEventListener('click', () => {
+      document.getElementById('phone-num').style.display = '';
+      sp.style.display = 'none';
+    });
+  },
+};
+
+/* ---------- post an ad (also edits) ---------- */
+routes['post'] = {
+  html(params) {
+    const u = currentUser();
+    if (!u) { setTimeout(() => { location.hash = '#/login?next=' + encodeURIComponent(location.hash); }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please log in...</div></main>'; }
+    const editId = params.get('edit');
+    const existing = editId ? LS.read('myads', []).find((a) => String(a.id) === String(editId)) : null;
+    return `<main class="wrap"><div class="form-card wide">
+    <h2>${existing ? 'Edit your ad' : 'Post your ad'}</h2>
+    <p class="sub">${existing ? 'Update the details below.' : "It's free — your ad goes live instantly."}</p>
+    <div class="form-err" id="form-err"></div>
+    <form id="ad-form">
+      <div class="field-row"><div class="field"><label>Category *</label><select id="f-cat">
+      ${DB.categories.map((c) => `<option value="${c.slug}" ${existing && existing.category.slug === c.slug ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></div>
+      <div class="field"><label>Location *</label><select id="f-loc">
+      ${DB.locations.map((l) => `<option ${existing && existing.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div></div>
+      <div class="field"><label>Ad title *</label><input id="f-title" maxlength="80" required value="${esc(existing ? existing.title : '')}" placeholder="e.g. iPhone 13 Pro 256GB, PTA approved"></div>
+      <div class="field"><label>Description *</label><textarea id="f-desc" required placeholder="Describe your item...">${esc(existing ? existing.description : '')}</textarea></div>
+      <div class="field-row"><div class="field"><label>Price (Rs) *</label><input id="f-price" type="number" min="0" required value="${existing ? existing.price : ''}" placeholder="e.g. 85000"></div>
+      <div class="field"><label>Condition</label><select id="f-cond">
+      <option value="used"${existing && existing.condition === 'used' ? ' selected' : ''}>Used</option>
+      <option value="new"${existing && existing.condition === 'new' ? ' selected' : ''}>New</option></select></div></div>
+      <div class="field"><label class="check-row"><input type="checkbox" id="f-neg" style="width:auto"${existing && existing.negotiable ? ' checked' : ''}> Price is negotiable</label></div>
+      ${existing ? '' : `<div class="field"><label>Photos (up to 6)</label><input id="f-imgs" type="file" accept="image/*" multiple><div class="hint">Stored in your browser.</div><div class="img-preview" id="img-prev"></div></div>`}
+      <button class="btn amber block" type="submit">${existing ? 'Save changes' : 'Post ad now'}</button>
+    </form></div></main>`;
+  },
+  bind(params) {
+    const u = currentUser();
+    if (!u) return;
+    const editId = params.get('edit');
+    const prev = document.getElementById('img-prev');
+    const fi = document.getElementById('f-imgs');
+    if (fi) fi.addEventListener('change', () => {
+      prev.innerHTML = '';
+      [...fi.files].slice(0, 6).forEach((f) => {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        prev.appendChild(img);
+      });
+    });
+    document.getElementById('ad-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cat = DB.categories.find((c) => c.slug === document.getElementById('f-cat').value);
+      const base = {
+        title: document.getElementById('f-title').value.trim(),
+        description: document.getElementById('f-desc').value.trim(),
+        price: Math.max(0, Math.round(Number(document.getElementById('f-price').value) || 0)),
+        condition: document.getElementById('f-cond').value,
+        negotiable: document.getElementById('f-neg').checked ? 1 : 0,
+        location: document.getElementById('f-loc').value,
+        category: { id: cat.id, name: cat.name, slug: cat.slug },
+      };
+      if (!base.title || !base.description || !base.price) { toast('Please fill all required fields'); return; }
+      const done = (images) => {
+        const myads = LS.read('myads', []);
+        if (editId) {
+          const ad = myads.find((a) => String(a.id) === String(editId));
+          Object.assign(ad, base);
+          LS.write('myads', myads);
+          toast('Ad updated');
+          location.hash = '#/ad?id=' + ad.id;
+        } else {
+          const ad = Object.assign({ id: 'u' + Date.now(), sellerEmail: u.email, created_at: new Date().toISOString().slice(0, 19).replace('T', ' '), views: 0, status: 'active', images }, base);
+          myads.unshift(ad);
+          LS.write('myads', myads);
+          toast('Your ad is live!');
+          location.hash = '#/ad?id=' + ad.id;
+        }
+      };
+      if (editId || !fi || !fi.files.length) { done(editId ? undefined : []); return; }
+      const files = [...fi.files].slice(0, 6);
+      const out = [];
+      let n = 0;
+      files.forEach((f) => {
+        const r = new FileReader();
+        r.onload = () => { out.push(r.result); if (++n === files.length) done(out); };
+        r.readAsDataURL(f);
+      });
+    });
+  },
+};
+
+/* ---------- auth ---------- */
+function nextParam(params) { return params.get('next') || '#/'; }
+routes['login'] = {
+  html() {
+    return `<main class="wrap"><div class="form-card"><h2>Welcome back</h2>
+    <p class="sub">Log in to post ads and save favorites. Demo: demo@sooda.pk / demo1234</p>
+    <div class="form-err" id="form-err"></div>
+    <form id="auth-form"><div class="field"><label>Email</label><input id="a-email" type="email" required></div>
+    <div class="field"><label>Password</label><input id="a-pass" type="password" required></div>
+    <button class="btn block" type="submit">Login</button></form>
+    <p style="margin-top:16px;font-size:14px;text-align:center">New here? <a href="#/signup" style="color:#0e5c46;font-weight:700">Create an account</a></p></div></main>`;
+  },
+  bind(params) {
+    document.getElementById('auth-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('a-email').value.trim().toLowerCase();
+      const pass = document.getElementById('a-pass').value;
+      const u = LS.read('users', []).find((x) => x.email === email && x.pass === pass);
+      if (!u) { const er = document.getElementById('form-err'); er.textContent = 'Wrong email or password.'; er.style.display = 'block'; return; }
+      LS.write('session', email);
+      location.hash = nextParam(params);
+    });
+  },
+};
+routes['signup'] = {
+  html() {
+    return `<main class="wrap"><div class="form-card"><h2>Create your account</h2>
+    <p class="sub">Free forever. Saved in this browser.</p>
+    <div class="form-err" id="form-err"></div>
+    <form id="auth-form"><div class="field"><label>Full name</label><input id="a-name" required></div>
+    <div class="field"><label>Email</label><input id="a-email" type="email" required></div>
+    <div class="field"><label>Phone / WhatsApp</label><input id="a-phone" required></div>
+    <div class="field"><label>Password</label><input id="a-pass" type="password" required minlength="6"></div>
+    <button class="btn block" type="submit">Create account</button></form>
+    <p style="margin-top:16px;font-size:14px;text-align:center">Already have an account? <a href="#/login" style="color:#0e5c46;font-weight:700">Log in</a></p></div></main>`;
+  },
+  bind() {
+    document.getElementById('auth-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('a-email').value.trim().toLowerCase();
+      const users = LS.read('users', []);
+      if (users.find((x) => x.email === email)) { const er = document.getElementById('form-err'); er.textContent = 'Email already registered.'; er.style.display = 'block'; return; }
+      users.push({ name: document.getElementById('a-name').value.trim(), email, phone: document.getElementById('a-phone').value.trim(), pass: document.getElementById('a-pass').value });
+      LS.write('users', users);
+      LS.write('session', email);
+      toast('Account created — welcome!');
+      setTimeout(() => { location.hash = '#/'; }, 600);
+    });
+  },
+};
+
+/* ---------- my ads ---------- */
+routes['my-ads'] = {
+  html() {
+    const u = currentUser();
+    if (!u) { setTimeout(() => { location.hash = '#/login?next=' + encodeURIComponent('#/my-ads'); }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please log in...</div></main>'; }
+    const mine = allAds().filter((a) => a.sellerEmail === u.email || (u.email === DEMO_USER.email && !a.sellerEmail));
+    const rows = mine.map((a) => {
+      const thumb = a.images[0] ? `<img src="${IMG[a.images[0]] || a.images[0]}" alt="">` : '';
+      return `<div class="myad"><a href="#/ad?id=${a.id}">${thumb}</a>
+      <div class="info"><b>${esc(a.title)}</b><small>${fmtPrice(a.price)} · ${esc(a.location)} · ${adViews(a)} views</small>
+      <div style="margin-top:6px"><span class="badge ${(a.status || 'active') !== 'active' ? 'sold' : ''}">${esc(a.status || 'active')}</span></div></div>
+      <div class="actions">${a.sellerEmail ? `<a class="btn sm ghost" href="#/post?edit=${a.id}">Edit</a>` : ''}
+      <button class="btn sm ghost" data-sold="${a.id}">${(a.status || 'active') === 'active' ? 'Mark sold' : 'Reactivate'}</button>
+      <button class="btn sm danger" data-del="${a.id}">Delete</button></div></div>`;
+    }).join('');
+    return `<main class="wrap"><section class="section"><div class="results-head"><h2>My ads</h2>
+    <a class="btn amber" href="#/post">+ Post new ad</a></div>
+    ${mine.length ? rows : `<div class="empty"><h3>No ads yet</h3><a class="btn amber" href="#/post" style="margin-top:12px">Post a free ad</a></div>`}
+    </section></main>`;
+  },
+  bind() {
+    document.getElementById('app').addEventListener('click', function h(e) {
+      const del = e.target.closest('[data-del]');
+      const sold = e.target.closest('[data-sold]');
+      if (del) {
+        if (!confirm('Delete this ad permanently?')) return;
+        const id = String(del.dataset.del);
+        if (/^u/.test(id)) LS.write('myads', LS.read('myads', []).filter((a) => String(a.id) !== id));
+        else LS.write('deleted', LS.read('deleted', []).concat([id]));
+        toast('Ad deleted'); navigate();
+      } else if (sold) {
+        const id = String(sold.dataset.sold);
+        const ad = getAd(id);
+        const to = (ad.status || 'active') === 'active' ? 'sold' : 'active';
+        if (/^u/.test(id)) { const m = LS.read('myads', []); m.find((a) => String(a.id) === id).status = to; LS.write('myads', m); }
+        else { const st = LS.read('status', {}); st[id] = to; LS.write('status', st); }
+        toast(to === 'sold' ? 'Marked as sold' : 'Ad reactivated');
+        setTimeout(navigate, 500);
+      }
+    }, { once: true });
+  },
+};
+
+/* ---------- favorites ---------- */
+routes['favorites'] = {
+  html() {
+    const u = currentUser();
+    if (!u) { setTimeout(() => { location.hash = '#/login?next=' + encodeURIComponent('#/favorites'); }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please log in...</div></main>'; }
+    const list = (LS.read('favs', {})[u.email] || []).map(getAd).filter(Boolean);
+    return `<main class="wrap"><section class="section"><h2>My favorites</h2>
+    ${list.length ? `<div class="ads-grid">${list.map((a) => adCard(a).replace('data-fav=', 'data-fav-page="1" data-fav=')).join('')}</div>`
+      : `<div class="empty"><h3>No favorites yet</h3><p>Tap ♡ on any ad to save it here.</p><a class="btn" href="#/" style="margin-top:12px">Browse ads</a></div>`}
+    </section></main>`;
+  },
+};
+
+/* ---------- init ---------- */
+bindFavDelegation();
+if (!location.hash) location.hash = '#/';
+navigate();
+
+</script>
+</body>
+</html>

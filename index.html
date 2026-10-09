@@ -559,6 +559,104 @@ const ICONS = {
 const icon = (n) =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;color:#0e5c46">${ICONS[n] || ICONS.blocks}</svg>`;
 
+/* ---------- TOTP two-factor auth (RFC 6238, pure JS) ---------- */
+function sha1(msg) {
+  const ml = msg.length;
+  const padded = new Uint8Array((((ml + 8) >> 6) + 1) * 64);
+  padded.set(msg);
+  padded[ml] = 0x80;
+  const dv = new DataView(padded.buffer);
+  dv.setUint32(padded.length - 4, (ml * 8) >>> 0);
+  dv.setUint32(padded.length - 8, Math.floor((ml * 8) / 4294967296));
+  let h0 = 0x67452301, h1 = 0xefcdab89, h2 = 0x98badcfe,
+      h3 = 0x10325476, h4 = 0xc3d2e1f0;
+  const w = new Uint32Array(80);
+  for (let off = 0; off < padded.length; off += 64) {
+    for (let i = 0; i < 16; i++) w[i] = dv.getUint32(off + i * 4);
+    for (let i = 16; i < 80; i++) {
+      const x = w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16];
+      w[i] = (x << 1) | (x >>> 31);
+    }
+    let a = h0, b = h1, c = h2, d = h3, e = h4;
+    for (let i = 0; i < 80; i++) {
+      let f, k;
+      if (i < 20) { f = (b & c) | (~b & d); k = 0x5a827999; }
+      else if (i < 40) { f = b ^ c ^ d; k = 0x6ed9eba1; }
+      else if (i < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8f1bbcdc; }
+      else { f = b ^ c ^ d; k = 0xca62c1d6; }
+      const t = (((a << 5) | (a >>> 27)) + f + e + k + w[i]) | 0;
+      e = d; d = c; c = (b << 30) | (b >>> 2); b = a; a = t;
+    }
+    h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0;
+    h3 = (h3 + d) | 0; h4 = (h4 + e) | 0;
+  }
+  const out = new Uint8Array(20);
+  const odv = new DataView(out.buffer);
+  odv.setUint32(0, h0); odv.setUint32(4, h1); odv.setUint32(8, h2);
+  odv.setUint32(12, h3); odv.setUint32(16, h4);
+  return out;
+}
+function hmacSha1(key, msg) {
+  if (key.length > 64) key = sha1(key);
+  const k = new Uint8Array(64);
+  k.set(key);
+  const inner = new Uint8Array(64 + msg.length);
+  const outer = new Uint8Array(64 + 20);
+  for (let i = 0; i < 64; i++) {
+    inner[i] = k[i] ^ 0x36;
+    outer[i] = k[i] ^ 0x5c;
+  }
+  inner.set(msg, 64);
+  const ih = sha1(inner);
+  outer.set(ih, 64);
+  return sha1(outer);
+}
+const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32encode(bytes) {
+  let out = '', bits = 0, val = 0;
+  for (const b of bytes) {
+    val = (val << 8) | b; bits += 8;
+    while (bits >= 5) { out += B32[(val >>> (bits - 5)) & 31]; bits -= 5; }
+  }
+  if (bits > 0) out += B32[(val << (5 - bits)) & 31];
+  while (out.length % 8) out += '=';
+  return out;
+}
+function b32decode(s) {
+  s = String(s).replace(/=+$/, '').toUpperCase();
+  const out = [];
+  let bits = 0, val = 0;
+  for (const ch of s) {
+    const i = B32.indexOf(ch);
+    if (i < 0) continue;
+    val = (val << 5) | i; bits += 5;
+    if (bits >= 8) { out.push((val >>> (bits - 8)) & 255); bits -= 8; }
+  }
+  return new Uint8Array(out);
+}
+function genTfaSecret() {
+  const b = new Uint8Array(20);
+  crypto.getRandomValues(b);
+  return b32encode(b).replace(/=+$/, '');
+}
+function totpCode(secret, when) {
+  let t = Math.floor((when == null ? Date.now() : when) / 30000);
+  const msg = new Uint8Array(8);
+  for (let i = 7; i >= 0; i--) { msg[i] = t & 255; t = Math.floor(t / 256); }
+  const h = hmacSha1(b32decode(secret), msg);
+  const o = h[19] & 15;
+  const n = ((h[o] & 127) << 24) | (h[o + 1] << 16) | (h[o + 2] << 8) | h[o + 3];
+  return String(n % 1000000).padStart(6, '0');
+}
+function verifyTotp(secret, code) {
+  code = String(code).replace(/\D/g, '');
+  if (!/^\d{6}$/.test(code)) return false;
+  const now = Date.now();
+  return totpCode(secret, now) === code ||
+    totpCode(secret, now - 30000) === code ||
+    totpCode(secret, now + 30000) === code;
+}
+
 /* ---------- local store (replaces the server) ---------- */
 const LS = {
   read(k, d) { try { const v = localStorage.getItem('sooda_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
@@ -902,6 +1000,8 @@ routes['post'] = {
 
 /* ---------- auth ---------- */
 function nextParam(params) { return params.get('next') || '#/'; }
+let pendingUser = null;   // signup waiting on 2FA setup
+let pendingLogin = null;  // login waiting on 2FA code
 routes['login'] = {
   html() {
     return `<main class="wrap"><div class="form-card"><h2>Welcome back</h2>
@@ -919,21 +1019,54 @@ routes['login'] = {
       const pass = document.getElementById('a-pass').value;
       const u = LS.read('users', []).find((x) => x.email === email && x.pass === pass);
       if (!u) { const er = document.getElementById('form-err'); er.textContent = 'Wrong email or password.'; er.style.display = 'block'; return; }
-      LS.write('session', email);
-      location.hash = nextParam(params);
+      if (u.tfa) {
+        pendingLogin = { email, next: nextParam(params) };
+        location.hash = '#/verify-2fa';
+      } else {
+        LS.write('session', email);
+        location.hash = nextParam(params);
+      }
+    });
+  },
+};
+routes['verify-2fa'] = {
+  html() {
+    if (!pendingLogin) { setTimeout(() => { location.hash = '#/login'; }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please log in first.</div></main>'; }
+    return `<main class="wrap"><div class="form-card"><h2>Two-factor authentication</h2>
+    <p class="sub">Enter the 6-digit code from your authenticator app.</p>
+    <div class="form-err" id="form-err"></div>
+    <form id="tfa-form"><div class="field"><label>6-digit code</label>
+    <input id="tfa-code" inputmode="numeric" maxlength="6" required placeholder="123456" style="text-align:center;font-size:20px;letter-spacing:4px"></div>
+    <button class="btn block" type="submit">Verify</button></form></div></main>`;
+  },
+  bind() {
+    if (!pendingLogin) return;
+    document.getElementById('tfa-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = LS.read('users', []).find((x) => x.email === pendingLogin.email);
+      if (u && u.tfa && verifyTotp(u.tfa, document.getElementById('tfa-code').value)) {
+        LS.write('session', pendingLogin.email);
+        const next = pendingLogin.next;
+        pendingLogin = null;
+        location.hash = next;
+      } else {
+        const er = document.getElementById('form-err');
+        er.textContent = 'Wrong code — check your authenticator app and try again.';
+        er.style.display = 'block';
+      }
     });
   },
 };
 routes['signup'] = {
   html() {
     return `<main class="wrap"><div class="form-card"><h2>Create your account</h2>
-    <p class="sub">Free forever. Saved in this browser.</p>
+    <p class="sub">Free forever. Saved in this browser. Optional 2FA on the next step.</p>
     <div class="form-err" id="form-err"></div>
     <form id="auth-form"><div class="field"><label>Full name</label><input id="a-name" required></div>
     <div class="field"><label>Email</label><input id="a-email" type="email" required></div>
     <div class="field"><label>Phone / WhatsApp</label><input id="a-phone" required></div>
     <div class="field"><label>Password</label><input id="a-pass" type="password" required minlength="6"></div>
-    <button class="btn block" type="submit">Create account</button></form>
+    <button class="btn block" type="submit">Continue</button></form>
     <p style="margin-top:16px;font-size:14px;text-align:center">Already have an account? <a href="#/login" style="color:#0e5c46;font-weight:700">Log in</a></p></div></main>`;
   },
   bind() {
@@ -942,12 +1075,54 @@ routes['signup'] = {
       const email = document.getElementById('a-email').value.trim().toLowerCase();
       const users = LS.read('users', []);
       if (users.find((x) => x.email === email)) { const er = document.getElementById('form-err'); er.textContent = 'Email already registered.'; er.style.display = 'block'; return; }
-      users.push({ name: document.getElementById('a-name').value.trim(), email, phone: document.getElementById('a-phone').value.trim(), pass: document.getElementById('a-pass').value });
-      LS.write('users', users);
-      LS.write('session', email);
-      toast('Account created — welcome!');
-      setTimeout(() => { location.hash = '#/'; }, 600);
+      pendingUser = {
+        name: document.getElementById('a-name').value.trim(),
+        email,
+        phone: document.getElementById('a-phone').value.trim(),
+        pass: document.getElementById('a-pass').value,
+        tfaSecret: genTfaSecret(),
+      };
+      location.hash = '#/setup-2fa';
     });
+  },
+};
+routes['setup-2fa'] = {
+  html() {
+    if (!pendingUser) { setTimeout(() => { location.hash = '#/signup'; }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please sign up first.</div></main>'; }
+    const s = pendingUser.tfaSecret;
+    return `<main class="wrap"><div class="form-card"><h2>Secure your account</h2>
+    <p class="sub">Add this key to your authenticator app (Google Authenticator, Authy, 1Password): choose <b>"Enter setup key"</b> and name it <b>Sooda</b>.</p>
+    <div class="field"><label>Your setup key</label>
+    <div style="font-family:monospace;font-size:17px;letter-spacing:2px;background:#f4f6f4;border:1.5px dashed #0e5c46;border-radius:8px;padding:12px 8px;text-align:center;user-select:all;word-break:break-all">${esc(s)}</div></div>
+    <div class="form-err" id="form-err"></div>
+    <form id="tfa-form"><div class="field"><label>6-digit code from the app</label>
+    <input id="tfa-code" inputmode="numeric" maxlength="6" required placeholder="123456" style="text-align:center;font-size:20px;letter-spacing:4px"></div>
+    <button class="btn block" type="submit">Verify & enable 2FA</button></form>
+    <p style="margin-top:14px;text-align:center"><a href="#" id="skip-tfa" style="color:#66756f;font-size:14px">Skip for now</a></p></div></main>`;
+  },
+  bind() {
+    if (!pendingUser) return;
+    const finish = (withTfa) => {
+      const users = LS.read('users', []);
+      const nu = { name: pendingUser.name, email: pendingUser.email, phone: pendingUser.phone, pass: pendingUser.pass };
+      if (withTfa) nu.tfa = pendingUser.tfaSecret;
+      users.push(nu);
+      LS.write('users', users);
+      LS.write('session', pendingUser.email);
+      pendingUser = null;
+      toast(withTfa ? 'Account created — 2FA enabled' : 'Account created — welcome!');
+      setTimeout(() => { location.hash = '#/'; }, 700);
+    };
+    document.getElementById('tfa-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (verifyTotp(pendingUser.tfaSecret, document.getElementById('tfa-code').value)) finish(true);
+      else {
+        const er = document.getElementById('form-err');
+        er.textContent = 'Wrong code — check your authenticator app and try again.';
+        er.style.display = 'block';
+      }
+    });
+    document.getElementById('skip-tfa').addEventListener('click', (e) => { e.preventDefault(); finish(false); });
   },
 };
 

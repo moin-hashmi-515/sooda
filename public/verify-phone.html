@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify your phone — Sooda</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header" id="site-header"></header>
+<main class="wrap">
+  <div class="form-card">
+    <h2>Verify your phone</h2>
+    <p class="sub" id="verify-sub">We'll send a 6-digit code to your number.</p>
+    <div class="form-err" id="form-err"></div>
+    <div id="step-channel">
+      <div class="field">
+        <label>How should we send the code?</label>
+        <div class="action-row" style="margin-top:0">
+          <button class="btn ghost block" id="btn-sms">SMS</button>
+          <button class="btn ghost block" id="btn-wa">WhatsApp</button>
+        </div>
+      </div>
+    </div>
+    <div id="step-code" style="display:none">
+      <p style="font-size:14px;margin-bottom:14px" id="sent-to"></p>
+      <form id="code-form">
+        <div class="field">
+          <label>6-digit code</label>
+          <input id="code" inputmode="numeric" maxlength="6" required
+            placeholder="123456" style="text-align:center;font-size:20px;letter-spacing:4px">
+          <div class="hint">Expires in 10 minutes.</div>
+        </div>
+        <button class="btn block" type="submit">Verify</button>
+      </form>
+      <p style="margin-top:14px;text-align:center">
+        <button class="btn ghost sm" id="resend" disabled>Resend code (<span id="cd">60</span>s)</button>
+      </p>
+    </div>
+    <div id="step-done" style="display:none;text-align:center">
+      <div style="font-size:44px;margin-bottom:8px">✓</div>
+      <h3>Phone verified</h3>
+      <p class="sub">You can now post ads.</p>
+      <a class="btn amber block" href="/post-ad.html" style="margin-top:12px">Post your first ad</a>
+    </div>
+  </div>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="/js/common.js"></script>
+<script src="/js/verify-phone.js"></script>
+</body>
+</html>

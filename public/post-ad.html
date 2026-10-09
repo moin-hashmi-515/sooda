@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post a free ad — Sooda</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header" id="site-header"></header>
+<main class="wrap">
+  <div class="form-card wide">
+    <h2 id="form-title">Post your ad</h2>
+    <p class="sub">It's free — your ad goes live instantly.</p>
+    <div class="form-err" id="verify-warn" style="display:none;background:#fef3d8;color:#8a5a00"></div>
+    <div class="form-err" id="form-err"></div>
+    <form id="ad-form">
+      <div class="field-row">
+        <div class="field">
+          <label>Category *</label>
+          <select id="category" required></select>
+        </div>
+        <div class="field">
+          <label>Location *</label>
+          <select id="location" required></select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ad title *</label>
+        <input id="title" maxlength="80" required
+          placeholder="e.g. iPhone 13 Pro 256GB, PTA approved">
+        <div class="hint">Mention the key details: brand, model, condition.</div>
+      </div>
+      <div class="field">
+        <label>Description *</label>
+        <textarea id="description" required
+          placeholder="Describe your item: condition, age, reason for selling, what's included..."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Price (Rs) *</label>
+          <input id="price" type="number" min="0" required placeholder="e.g. 85000">
+        </div>
+        <div class="field">
+          <label>Condition</label>
+          <select id="condition">
+            <option value="used">Used</option>
+            <option value="new">New</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="check-row"><input type="checkbox" id="negotiable"> Price is negotiable</label>
+      </div>
+      <div class="field" id="images-field">
+        <label>Photos (up to 6)</label>
+        <input id="images" type="file" accept="image/*" multiple>
+        <div class="hint">First photo becomes the cover. Max 5MB each.</div>
+        <div class="img-preview" id="img-preview"></div>
+      </div>
+      <button class="btn amber block" type="submit" id="submit-btn">Post ad now</button>
+    </form>
+  </div>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="/js/common.js"></script>
+<script src="/js/post-ad.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "multer": "^2.4.0",
+    "twilio": "^5.10.0"
+  },
+  "description": "Sooda — a full working classifieds platform (OLX-style) for Pakistan",
+  "license": "MIT",
+  "main": "server.js",
+  "name": "sooda",
+  "scripts": {
+    "seed": "node seed.js",
+    "start": "node server.js"
+  },
+  "version": "1.0.0"
+}

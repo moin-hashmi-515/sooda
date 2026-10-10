@@ -59,6 +59,14 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.5px;
   color: #fff;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  flex: none;
 }
 .logo span { color: var(--amber-500); }
 .searchbar {
@@ -708,7 +716,7 @@ function headerHtml() {
        <a href="#" id="logout-link">Logout</a>`
     : `<a href="#/login">Login</a><a href="#/signup">Sign up</a>`;
   return `<header class="site-header"><div class="header-inner">
-    <a class="logo" href="#/">Sooda<span>.</span></a>
+    <a class="logo" href="#/"><svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#ffffff"/><text x="32" y="45" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" fill="#0e5c46" text-anchor="middle">S</text><rect x="18" y="48" width="28" height="4" rx="2" fill="#f2a007"/></svg>Sooda<span>.</span></a>
     <form class="searchbar" id="search-form">
       <select id="search-loc"><option value="">All Pakistan</option>
       ${DB.locations.map((l) => `<option ${filters.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>

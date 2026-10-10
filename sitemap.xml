@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Replace https://YOUR-DOMAIN with your real Netlify domain,
-       e.g. https://sooda.netlify.app  (no trailing slash issues:
-       keep exactly one entry per page, no URL fragments) -->
+  <!-- Sooda — https://soodaa.netlify.app -->
   <url>
-    <loc>https://YOUR-DOMAIN/</loc>
+    <loc>https://soodaa.netlify.app/</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>

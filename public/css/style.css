@@ -144,13 +144,32 @@ img { max-width: 100%; display: block; }
 }
 .hero .stats b { display: block; font-size: 22px; color: var(--amber-500); }
 .hero .stats small { color: #bcd8c9; }
-.hero .acronym {
-  margin: 14px 0 0;
-  font-size: 15px;
-  letter-spacing: 0.05em;
-  color: #bcd8c9;
+/* ---------- hero acronym animation ---------- */
+.hero-anim { position: relative; overflow: hidden; }
+.ac-stage {
+  position: relative;
+  height: 290px;
+  margin: 6px auto 4px;
+  max-width: 900px;
 }
-.hero .acronym b { color: var(--amber-500); font-size: 1.2em; }
+#acFx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ac-el {
+  position: absolute;
+  left: 0; top: 0;
+  white-space: nowrap;
+  font-weight: 800;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.ac-w { color: #fff; }
+.ac-fl { color: #fff; transition: color 0.35s; }
+.ac-fl.hi { color: var(--amber-500); }
+.ac-sep { color: #3d6b5c; font-weight: 800; }
+.ac-mean { color: #fff; font-weight: 700; letter-spacing: 0.05em; }
+.hero-fade { animation: heroFade 0.9s ease 0.7s both; }
+@keyframes heroFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) { .ac-stage { height: 330px; } }
+@media (prefers-reduced-motion: reduce) { .hero-fade { animation: none; } }
 .acronym-foot { margin-top: 10px; font-size: 13px; letter-spacing: 0.04em; color: #9fb3a9; }
 .acronym-foot b { color: var(--amber-500); }
 

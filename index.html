@@ -25,6 +25,18 @@
   --shadow: 0 2px 10px rgba(11, 61, 46, 0.08);
   --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
 }
+[data-theme="dark"] {
+  --bg: #0e1713;
+  --card: #16241e;
+  --ink: #e9f1ec;
+  --muted: #9db4a8;
+  --line: #274035;
+  --green-100: #1c3a2d;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+[data-theme="dark"] .ad-card .price { color: var(--ink); }
+[data-theme="dark"] .bid-now b, [data-theme="dark"] .bid-row b { color: var(--amber-500); }
+[data-theme="dark"] .hero { background: linear-gradient(135deg, #071f17, #0b3d2e); }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font);
@@ -202,7 +214,7 @@ img { max-width: 100%; display: block; }
   top: 50%;
   width: 118px;
   height: 152px;
-  background: #fff;
+  background: var(--card);
   border-radius: 14px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
   display: flex;
@@ -348,7 +360,7 @@ img { max-width: 100%; display: block; }
   vertical-align: 2px;
 }
 .bid-card {
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 18px;
@@ -552,7 +564,7 @@ img { max-width: 100%; display: block; }
 .btn:hover { background: var(--green-600); }
 .btn.amber { background: var(--amber-500); color: #231a00; }
 .btn.amber:hover { background: var(--amber-600); }
-.btn.ghost { background: #fff; color: var(--green-700);
+.btn.ghost { background: var(--card); color: var(--green-700);
   border: 1.5px solid var(--green-700); }
 .btn.danger { background: var(--danger); }
 .btn.block { width: 100%; }
@@ -678,6 +690,106 @@ img { max-width: 100%; display: block; }
   .searchbar { order: 3; flex-basis: 100%; }
   .hero h1 { font-size: 26px; }
   .field-row { grid-template-columns: 1fr; }
+}
+
+/* ---------- checklist: finished-product features ---------- */
+/* skip link */
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--amber-500); color: #1c2420; font-weight: 700;
+  padding: 10px 18px; border-radius: 0 0 10px 0;
+}
+.skip-link:focus { left: 0; }
+/* scroll progress */
+#scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: var(--amber-500); z-index: 200;
+}
+/* back to top + floating help */
+.float-btn {
+  position: fixed; right: 18px; z-index: 150;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; cursor: pointer; border: 0;
+  box-shadow: var(--shadow);
+}
+#to-top { bottom: 76px; background: var(--card); color: var(--green-700); border: 1px solid var(--line); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+#to-top.show { opacity: 1; pointer-events: auto; }
+#help-fab { bottom: 18px; background: var(--green-700); color: #fff; font-weight: 800; text-decoration: none; }
+/* cookie banner */
+#cookie-banner {
+  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 180;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 14px 16px;
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+  font-size: 14px; max-width: 560px; margin: 0 auto;
+}
+/* theme toggle */
+.theme-toggle {
+  background: none; border: 1px solid rgba(255,255,255,0.35); color: #fff;
+  border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 15px;
+}
+/* mobile menu */
+.menu-toggle { display: none; background: none; border: 0; color: #fff; font-size: 24px; cursor: pointer; padding: 6px; }
+@media (max-width: 860px) {
+  .menu-toggle { display: block; }
+  .nav-links {
+    display: none; position: absolute; top: 100%; right: 0; left: 0;
+    background: var(--green-900); flex-direction: column; align-items: stretch;
+    padding: 10px 16px 16px; gap: 4px; z-index: 100;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 10px 4px; border-top: 1px solid rgba(255,255,255,0.12); }
+  .site-header .header-inner { position: relative; flex-wrap: wrap; }
+  .searchbar { order: 3; flex-basis: 100%; margin-top: 10px; }
+}
+/* confirm modal */
+.modal-back {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 190;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.modal {
+  background: var(--card); border-radius: var(--radius); padding: 24px;
+  max-width: 380px; width: 100%; box-shadow: var(--shadow);
+}
+.modal h3 { margin-bottom: 8px; }
+.modal p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+.modal .row { display: flex; gap: 10px; justify-content: flex-end; }
+.btn.danger { background: var(--danger); color: #fff; }
+/* faq */
+.faq { max-width: 760px; margin: 0 auto; }
+.faq-item { border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; background: var(--card); overflow: hidden; }
+.faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; font-size: 15px; font-weight: 700; background: none; border: 0; cursor: pointer; text-align: left; color: var(--ink); }
+.faq-q span { color: var(--amber-500); font-size: 20px; flex: none; }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; padding: 0 18px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.faq-a.open { max-height: 400px; padding-bottom: 16px; }
+/* password toggle */
+.pass-wrap { position: relative; }
+.pass-wrap input { width: 100%; padding-right: 52px; }
+.pass-toggle {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  background: none; border: 0; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; padding: 6px;
+}
+/* copy button */
+.copy-btn {
+  background: none; border: 1px solid var(--line); border-radius: 8px;
+  color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 10px; margin-left: 8px;
+}
+.copy-btn:hover { color: var(--green-700); border-color: var(--green-700); }
+/* info pages */
+.form-card.wide h3 { margin: 18px 0 6px; font-size: 16px; }
+.form-card.wide p { margin-bottom: 8px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.form-card.wide a { color: var(--green-700); font-weight: 600; }
+/* print */
+@media print {
+  .site-header, .site-footer, .float-btn, #cookie-banner, #scroll-progress,
+  .action-row, .seller-card, .bid-card form, #help-fab, #to-top { display: none !important; }
+  body { background: #fff; color: #000; }
+  .ad-detail { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-a { transition: none; }
+  #to-top { transition: none; }
 }
 
 </style>
@@ -836,8 +948,28 @@ const LS = {
   read(k, d) { try { const v = localStorage.getItem('sooda_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   write(k, v) { try { localStorage.setItem('sooda_' + k, JSON.stringify(v)); } catch (e) { toast('Browser storage is full'); } },
 };
-const DEMO_USER = { name: 'Ahmed Raza', email: 'demo@sooda.pk', phone: '0300-1234567', pass: 'demo1234' };
-if (!LS.read('users', null)) LS.write('users', [DEMO_USER]);
+const DEMO_GONE = (() => {
+  const users = LS.read('users', []);
+  const clean = users.filter((x) => x.email !== 'demo@sooda.pk');
+  if (clean.length !== users.length) LS.write('users', clean);
+  return true;
+})();
+if (!LS.read('users', null)) LS.write('users', []);
+/* SHA-256 password hashing (async; falls back to a non-crypto hash off secure contexts) */
+const hashPass = async (pw) => {
+  const input = 'sooda-v1:' + pw;
+  try {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) {
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0; i < input.length; i++) {
+      const ch = input.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    return (h1 >>> 0).toString(16) + (h2 >>> 0).toString(16);
+  }
+};
 
 const currentUser = () => {
   const email = LS.read('session', null);
@@ -857,7 +989,7 @@ const currentBid = (ad) => {
 };
 const bidHistoryHtml = (ad) => {
   const bids = [...bidList(ad)].sort((x, y) => y.amount - x.amount).slice(0, 5);
-  if (!bids.length) return '<div class="bid-note">No bids yet — be the first.</div>';
+  if (!bids.length) return '<div class="bid-note">No bids yet. Be the first.</div>';
   return '<div class="bid-history">' + bids.map((b, i) =>
     `<div class="bid-row${i === 0 ? ' bid-lead' : ''}"><span>${esc(b.name)}<small>${timeAgo(b.at)}</small></span><b>${fmtPrice(b.amount)}</b></div>`
   ).join('') + '</div>';
@@ -893,15 +1025,17 @@ function headerHtml() {
        <span class="user-chip"><span class="avatar">${esc(u.name[0].toUpperCase())}</span>${esc(u.name.split(' ')[0])}</span>
        <a href="#" id="logout-link">Logout</a>`
     : `<a href="#/login">Login</a><a href="#/signup">Sign up</a>`;
-  return `<header class="site-header"><div class="header-inner">
+  return `<a class="skip-link" href="#app">Skip to content</a><header class="site-header"><div class="header-inner">
     <a class="logo" href="#/"><svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#ffffff"/><text x="32" y="45" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" fill="#0e5c46" text-anchor="middle">S</text><rect x="18" y="48" width="28" height="4" rx="2" fill="#f2a007"/></svg>Sooda<span>.</span></a>
-    <form class="searchbar" id="search-form">
-      <select id="search-loc"><option value="">All Pakistan</option>
+    <form class="searchbar" id="search-form" role="search">
+      <select id="search-loc" aria-label="Location"><option value="">All Pakistan</option>
       ${DB.locations.map((l) => `<option ${filters.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
-      <input id="search-q" placeholder="Find cars, mobiles, property..." value="${esc(filters.q || '')}">
+      <input id="search-q" placeholder="Find cars, mobiles, property..." value="${esc(filters.q || '')}" aria-label="Search ads">
       <button type="submit">Search</button>
     </form>
-    <nav class="nav-links">${authArea}<a class="sell-btn" href="#/post">+ SELL</a></nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">☰</button>
+    <nav class="nav-links" aria-label="Main navigation">${authArea}<a class="sell-btn" href="#/post">+ SELL</a></nav>
   </div></header>`;
 }
 function footerHtml() {
@@ -910,7 +1044,8 @@ function footerHtml() {
     <div><h4>Marketplace</h4>${DB.categories.slice(0, 4).map((c) => `<a href="#/" data-cat="${c.slug}">${esc(c.name)}</a>`).join('')}</div>
     <div><h4>Sell</h4><a href="#/post">Post a free ad</a><a href="#/my-ads">My ads</a><a href="#/favorites">Favorites</a></div>
     <div><h4>Account</h4><a href="#/login">Login</a><a href="#/signup">Sign up</a></div>
-  </div><div class="copyright">© 2026 Sooda · Single-file demo — your ads are saved in this browser.</div></footer>`;
+    <div><h4>Legal</h4><a href="#/privacy">Privacy policy</a><a href="#/terms">Terms of use</a><a href="#/faq">FAQ</a></div>
+  </div><div class="copyright">© 2026 Sooda · Your ads are saved in this browser.</div></footer>`;
 }
 function bindCommon() {
   const sf = document.getElementById('search-form');
@@ -925,6 +1060,97 @@ function bindCommon() {
   document.querySelectorAll('[data-cat]').forEach((a) => a.addEventListener('click', () => {
     filters = { q: '', category: a.dataset.cat, location: '', condition: 'any', min: '', max: '', sort: 'newest' };
   }));
+  const sk = document.getElementById('skip-link');
+  if (sk) sk.addEventListener('click', (e) => {
+    e.preventDefault();
+    const app = document.getElementById('app');
+    app.setAttribute('tabindex', '-1'); app.focus({ preventScroll: true }); app.scrollIntoView();
+  });
+  const mt = document.getElementById('menu-toggle');
+  if (mt) mt.addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('open'));
+  const th = document.getElementById('theme-toggle');
+  if (th) {
+    th.textContent = document.documentElement.dataset.theme === 'dark' ? '☀' : '☾';
+    th.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      LS.write('theme', next);
+      th.textContent = next === 'dark' ? '☀' : '☾';
+    });
+  }
+}
+/* one-time page chrome: theme, scroll UI, cookies, UTM (checklist A) */
+function initChrome() {
+  const savedTheme = LS.read('theme', null) ||
+    (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.theme = savedTheme;
+  const sp = document.createElement('div');
+  sp.id = 'scroll-progress'; sp.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(sp);
+  const tt = document.createElement('button');
+  tt.id = 'to-top'; tt.className = 'float-btn'; tt.textContent = '↑'; tt.setAttribute('aria-label', 'Back to top');
+  tt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+  document.body.appendChild(tt);
+  const help = document.createElement('a');
+  help.id = 'help-fab'; help.className = 'float-btn'; help.href = '#/faq'; help.textContent = '?';
+  help.setAttribute('aria-label', 'Help and frequently asked questions');
+  document.body.appendChild(help);
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    sp.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    tt.classList.toggle('show', h.scrollTop > 500);
+  }, { passive: true });
+  if (!LS.read('cookies-ok', null)) {
+    const cb = document.createElement('div');
+    cb.id = 'cookie-banner';
+    cb.innerHTML = '<span>We use only essential browser storage to keep you logged in and remember your ads. No tracking cookies.</span>';
+    const ok = document.createElement('button');
+    ok.className = 'btn sm'; ok.textContent = 'Got it';
+    ok.addEventListener('click', () => { LS.write('cookies-ok', 1); cb.remove(); });
+    cb.appendChild(ok);
+    document.body.appendChild(cb);
+  }
+  try {
+    const q = new URLSearchParams(location.search);
+    const utm = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((k) => {
+      const v = q.get(k); if (v) utm[k] = v;
+    });
+    if (Object.keys(utm).length) LS.write('utm', Object.assign(LS.read('utm', {}), utm));
+  } catch (e) { /* URLSearchParams unavailable */ }
+  // password visibility toggles + confirm-modal helper live here (delegated, survives re-renders)
+  document.getElementById('app').addEventListener('click', (e) => {
+    const pt = e.target.closest('.pass-toggle');
+    if (pt) {
+      const inp = document.getElementById(pt.dataset.pass);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      pt.textContent = show ? 'Hide' : 'Show';
+    }
+  });
+}
+/* styled confirmation modal (replaces native confirm()) */
+function confirmModal(title, msg, okLabel) {
+  return new Promise((resolve) => {
+    const back = document.createElement('div');
+    back.className = 'modal-back';
+    const box = document.createElement('div');
+    box.className = 'modal'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    const h = document.createElement('h3'); h.textContent = title;
+    const p = document.createElement('p'); p.textContent = msg;
+    const row = document.createElement('div'); row.className = 'row';
+    const cancel = document.createElement('button'); cancel.className = 'btn ghost'; cancel.textContent = 'Cancel';
+    const ok = document.createElement('button'); ok.className = 'btn danger'; ok.textContent = okLabel;
+    row.appendChild(cancel); row.appendChild(ok);
+    box.appendChild(h); box.appendChild(p); box.appendChild(row);
+    back.appendChild(box); document.body.appendChild(back);
+    const done = (v) => { back.remove(); resolve(v); };
+    cancel.addEventListener('click', () => done(false));
+    ok.addEventListener('click', () => done(true));
+    back.addEventListener('click', (e) => { if (e.target === back) done(false); });
+    ok.focus();
+  });
 }
 // Favorite buttons: delegated once on #app (which persists across renders).
 function bindFavDelegation() {
@@ -1246,7 +1472,7 @@ routes[''] = {
         : `<div class="empty" style="grid-column:1/-1"><h3>No ads found</h3><p>Try a different search or clear the filters.</p></div>`;
       const cat = DB.categories.find((c) => c.slug === f.category);
       document.getElementById('results-title').textContent =
-        f.q ? `Results for "${f.q}" (${list.length})` : cat ? `${cat.name} (${list.length})` : `Fresh recommendations (${list.length})`;
+        f.q ? `Results for "${f.q}" (${list.length})` : cat ? `${esc(cat.name)} (${list.length})` : `Fresh recommendations (${list.length})`;
     };
     document.getElementById('f-apply').addEventListener('click', () => {
       filters.category = document.getElementById('f-category').value;
@@ -1312,7 +1538,7 @@ routes['category'] = {
       if (cf.max !== '') list = list.filter((a) => a.price <= Number(cf.max));
       list.sort((a, b) => cf.sort === 'price_asc' ? a.price - b.price : cf.sort === 'price_desc' ? b.price - a.price : 0);
       document.getElementById('cat-grid').innerHTML = list.length ? list.map(adCard).join('')
-        : `<div class="empty" style="grid-column:1/-1"><h3>No ads in ${esc(cat.name)} yet</h3><p>Be the first — post your ad for free.</p><a class="btn amber" href="#/post?cat=${cat.slug}">+ Post a Free Ad</a></div>`;
+        : `<div class="empty" style="grid-column:1/-1"><h3>No ads in ${esc(cat.name)} yet</h3><p>Be the first. Post your ad for free.</p><a class="btn amber" href="#/post?cat=${cat.slug}">+ Post a Free Ad</a></div>`;
       document.getElementById('cat-count').textContent =
         `${total} ad${total === 1 ? '' : 's'} · Buy and sell ${cat.name.toLowerCase()} across Pakistan`;
     };
@@ -1349,7 +1575,7 @@ routes['ad'] = {
       if (!ad.bidding) return '';
       const cb = currentBid(ad), n = bidList(ad).length;
       let action;
-      if (mine) action = `<div class="bid-note">${n ? `You have ${n} bid${n > 1 ? 's' : ''} on this ad.` : 'No bids yet — share your ad to attract bids.'}</div>`;
+      if (mine) action = `<div class="bid-note">${n ? `You have ${n} bid${n > 1 ? 's' : ''} on this ad.` : 'No bids yet. Share your ad to attract bids.'}</div>`;
       else if (u) action = `<form id="bid-form"><div class="field-row"><input id="bid-amount" type="number" min="${cb + 1}" placeholder="Your bid (Rs)" required><button class="btn amber" type="submit">Bid</button></div><div class="bid-note">Must be higher than ${fmtPrice(cb)}</div><div class="form-err" id="bid-err"></div></form>`;
       else action = `<a class="btn amber block" href="#/login?next=${encodeURIComponent(location.hash)}">Login to place a bid</a>`;
       return `<div class="bid-card"><h3>Bidding</h3>
@@ -1365,6 +1591,7 @@ routes['ad'] = {
       <div class="spec"><span>Condition</span><b>${ad.condition === 'new' ? 'New' : 'Used'}</b></div>
       <div class="spec"><span>Location</span><b>${esc(ad.location)}</b></div>
       <div class="spec"><span>Posted</span><b>${timeAgo(ad.created_at)}</b></div>
+      ${ad.updated_at ? `<div class="spec"><span>Last updated</span><b>${timeAgo(ad.updated_at)}</b></div>` : ''}
       <div class="spec"><span>Views</span><b>${adViews(ad)}</b></div>
       <div class="spec"><span>Ad ID</span><b>${ad.id}</b></div></div>
       <div class="detail-box"><h3>Description</h3><p style="white-space:pre-wrap">${esc(ad.description)}</p></div>
@@ -1377,7 +1604,7 @@ routes['ad'] = {
     </div>${bidPanel}<div class="seller-card"><div class="avatar">${esc(seller.name[0].toUpperCase())}</div>
       <b>${esc(seller.name)}</b><div style="color:#66756f;font-size:13px;margin-bottom:12px">Seller</div>
       ${u ? `<button class="btn amber block" id="show-phone">Show phone number</button>
-        <div id="phone-num" style="display:none;font-size:22px;font-weight:800;margin-top:10px">${esc(seller.phone)}</div>`
+        <div id="phone-num" style="display:none;margin-top:10px"><span style="font-size:22px;font-weight:800">${esc(seller.phone)}</span><button class="copy-btn" id="copy-phone">Copy</button></div>`
         : `<a class="btn amber block" href="#/login?next=${encodeURIComponent(location.hash)}">Login to see phone</a>`}
     </div></div></div>
     ${similar.length ? `<section class="section"><h2>Similar ads</h2><div class="ads-grid">${similar.map(adCard).join('')}</div></section>` : ''}
@@ -1394,6 +1621,15 @@ routes['ad'] = {
     if (sp) sp.addEventListener('click', () => {
       document.getElementById('phone-num').style.display = '';
       sp.style.display = 'none';
+    });
+    const cp = document.getElementById('copy-phone');
+    if (cp) cp.addEventListener('click', async () => {
+      const num = document.querySelector('#phone-num span').textContent;
+      try {
+        if (!navigator.clipboard) throw new Error('no clipboard');
+        await navigator.clipboard.writeText(num);
+        toast('Phone number copied');
+      } catch (e) { toast('Copy is not available in this browser'); }
     });
     const bidForm = document.getElementById('bid-form');
     if (bidForm) bidForm.addEventListener('submit', (e) => {
@@ -1423,10 +1659,14 @@ routes['post'] = {
     if (!u) { setTimeout(() => { location.hash = '#/login?next=' + encodeURIComponent(location.hash); }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please log in...</div></main>'; }
     const editId = params.get('edit');
     const existing = editId ? LS.read('myads', []).find((a) => String(a.id) === String(editId)) : null;
+    if (editId && existing && existing.sellerEmail !== u.email) {
+      setTimeout(() => { location.hash = '#/my-ads'; }, 0);
+      return '<main class="wrap"><div class="empty" style="margin:30px 0">You can only edit your own ads.</div></main>';
+    }
     const preCat = params.get('cat');
     return `<main class="wrap"><div class="form-card wide">
     <h2>${existing ? 'Edit your ad' : 'Post your ad'}</h2>
-    <p class="sub">${existing ? 'Update the details below.' : "It's free — your ad goes live instantly."}</p>
+    <p class="sub">${existing ? 'Update the details below.' : "It's free. Your ad goes live instantly."}</p>
     <div class="form-err" id="form-err"></div>
     <form id="ad-form">
       <div class="field-row"><div class="field"><label>Category *</label><select id="f-cat">
@@ -1440,7 +1680,7 @@ routes['post'] = {
       <option value="used"${existing && existing.condition === 'used' ? ' selected' : ''}>Used</option>
       <option value="new"${existing && existing.condition === 'new' ? ' selected' : ''}>New</option></select></div></div>
       <div class="field"><label class="check-row"><input type="checkbox" id="f-neg" style="width:auto"${existing && existing.negotiable ? ' checked' : ''}> Price is negotiable</label></div>
-      <div class="field"><label class="check-row"><input type="checkbox" id="f-bid" style="width:auto"${existing && existing.bidding ? ' checked' : ''}> Accept bids on this ad</label><div class="hint">Buyers bid above your price — highest bid shows on your ad.</div></div>
+      <div class="field"><label class="check-row"><input type="checkbox" id="f-bid" style="width:auto"${existing && existing.bidding ? ' checked' : ''}> Accept bids on this ad</label><div class="hint">Buyers bid above your price. The highest bid shows on your ad.</div></div>
       ${existing ? '' : `<div class="field"><label>Photos (up to 6)</label><input id="f-imgs" type="file" accept="image/*" multiple><div class="hint">Stored in your browser.</div><div class="img-preview" id="img-prev"></div></div>`}
       <button class="btn amber block" type="submit">${existing ? 'Save changes' : 'Post ad now'}</button>
     </form></div></main>`;
@@ -1458,7 +1698,12 @@ routes['post'] = {
     syncBidLabel();
     if (fi) fi.addEventListener('change', () => {
       prev.innerHTML = '';
-      [...fi.files].slice(0, 6).forEach((f) => {
+      const valid = [...fi.files].slice(0, 6).filter((f) => {
+        if (!f.type.startsWith('image/')) { toast('Only image files are allowed'); return false; }
+        if (f.size > 5 * 1024 * 1024) { toast('Each photo must be under 5MB'); return false; }
+        return true;
+      });
+      valid.forEach((f) => {
         const img = document.createElement('img');
         img.src = URL.createObjectURL(f);
         prev.appendChild(img);
@@ -1485,6 +1730,7 @@ routes['post'] = {
         if (editId) {
           const ad = myads.find((a) => String(a.id) === String(editId));
           Object.assign(ad, base);
+          ad.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
           LS.write('myads', myads);
           toast('Ad updated');
           location.hash = '#/ad?id=' + ad.id;
@@ -1497,7 +1743,8 @@ routes['post'] = {
         }
       };
       if (editId || !fi || !fi.files.length) { done(editId ? undefined : []); return; }
-      const files = [...fi.files].slice(0, 6);
+      const files = [...fi.files].slice(0, 6).filter((f) => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
+      if (!files.length) { toast('Please choose valid image files (under 5MB each)'); return; }
       const out = [];
       let n = 0;
       files.forEach((f) => {
@@ -1516,20 +1763,44 @@ let pendingLogin = null;  // login waiting on 2FA code
 routes['login'] = {
   html() {
     return `<main class="wrap"><div class="form-card"><h2>Welcome back</h2>
-    <p class="sub">Log in to post ads and save favorites. Demo: demo@sooda.pk / demo1234</p>
+    <p class="sub">Log in to post ads and save favorites.</p>
     <div class="form-err" id="form-err"></div>
     <form id="auth-form"><div class="field"><label>Email</label><input id="a-email" type="email" required></div>
-    <div class="field"><label>Password</label><input id="a-pass" type="password" required></div>
+    <div class="field"><label>Password</label><div class="pass-wrap"><input id="a-pass" type="password" required><button type="button" class="pass-toggle" data-pass="a-pass">Show</button></div></div>
     <button class="btn block" type="submit">Login</button></form>
-    <p style="margin-top:16px;font-size:14px;text-align:center">New here? <a href="#/signup" style="color:#0e5c46;font-weight:700">Create an account</a></p></div></main>`;
+    <p style="margin-top:12px;font-size:14px;text-align:center"><a href="#/forgot" style="color:#0e5c46;font-weight:700">Forgot password?</a></p>
+    <p style="margin-top:8px;font-size:14px;text-align:center">New here? <a href="#/signup" style="color:#0e5c46;font-weight:700">Create an account</a></p></div></main>`;
   },
   bind(params) {
-    document.getElementById('auth-form').addEventListener('submit', (e) => {
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('a-email').value.trim().toLowerCase();
       const pass = document.getElementById('a-pass').value;
-      const u = LS.read('users', []).find((x) => x.email === email && x.pass === pass);
-      if (!u) { const er = document.getElementById('form-err'); er.textContent = 'Wrong email or password.'; er.style.display = 'block'; return; }
+      const er = document.getElementById('form-err');
+      const showErr = (m) => { er.textContent = m; er.style.display = 'block'; };
+      const rl = LS.read('login-rl', {});
+      const rec = rl['rl-' + email];
+      if (rec && Date.now() < rec.until) { showErr('Too many attempts. Please wait a minute and try again.'); return; }
+      const users = LS.read('users', []);
+      const u = users.find((x) => x.email === email);
+      const fail = () => {
+        const r = rl['rl-' + email] || { n: 0 };
+        r.n += 1;
+        if (r.n >= 5) { r.until = Date.now() + 60000; r.n = 0; }
+        rl['rl-' + email] = r;
+        LS.write('login-rl', rl);
+        showErr('Wrong email or password.');
+      };
+      if (!u) { fail(); return; }
+      let ok = false;
+      if (u.passHash) ok = (await hashPass(pass)) === u.passHash;
+      else if (u.pass) {
+        ok = u.pass === pass;
+        if (ok) { u.passHash = await hashPass(pass); delete u.pass; LS.write('users', users); }
+      }
+      if (!ok) { fail(); return; }
+      delete rl['rl-' + email];
+      LS.write('login-rl', rl);
       if (u.tfa) {
         pendingLogin = { email, next: nextParam(params) };
         location.hash = '#/verify-2fa';
@@ -1537,6 +1808,34 @@ routes['login'] = {
         LS.write('session', email);
         location.hash = nextParam(params);
       }
+    });
+  },
+};
+routes['forgot'] = {
+  html() {
+    return `<main class="wrap"><div class="form-card"><h2>Reset password</h2>
+    <p class="sub">Enter your account email, the phone number you signed up with, and a new password.</p>
+    <div class="form-err" id="form-err"></div>
+    <form id="auth-form"><div class="field"><label>Email</label><input id="a-email" type="email" required></div>
+    <div class="field"><label>Phone / WhatsApp</label><input id="a-phone" required></div>
+    <div class="field"><label>New password</label><div class="pass-wrap"><input id="a-pass" type="password" required minlength="6"><button type="button" class="pass-toggle" data-pass="a-pass">Show</button></div></div>
+    <button class="btn block" type="submit">Set new password</button></form>
+    <p style="margin-top:16px;font-size:14px;text-align:center"><a href="#/login" style="color:#0e5c46;font-weight:700">Back to login</a></p></div></main>`;
+  },
+  bind() {
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('a-email').value.trim().toLowerCase();
+      const phone = document.getElementById('a-phone').value.trim();
+      const er = document.getElementById('form-err');
+      const users = LS.read('users', []);
+      const u = users.find((x) => x.email === email && x.phone === phone);
+      if (!u) { er.textContent = 'No account matches that email and phone number.'; er.style.display = 'block'; return; }
+      u.passHash = await hashPass(document.getElementById('a-pass').value);
+      delete u.pass;
+      LS.write('users', users);
+      toast('Password updated. Please log in.');
+      setTimeout(() => { location.hash = '#/login'; }, 700);
     });
   },
 };
@@ -1562,7 +1861,7 @@ routes['verify-2fa'] = {
         location.hash = next;
       } else {
         const er = document.getElementById('form-err');
-        er.textContent = 'Wrong code — check your authenticator app and try again.';
+        er.textContent = 'Wrong code. Check your authenticator app and try again.';
         er.style.display = 'block';
       }
     });
@@ -1576,12 +1875,12 @@ routes['signup'] = {
     <form id="auth-form"><div class="field"><label>Full name</label><input id="a-name" required></div>
     <div class="field"><label>Email</label><input id="a-email" type="email" required></div>
     <div class="field"><label>Phone / WhatsApp</label><input id="a-phone" required></div>
-    <div class="field"><label>Password</label><input id="a-pass" type="password" required minlength="6"></div>
+    <div class="field"><label>Password</label><div class="pass-wrap"><input id="a-pass" type="password" required minlength="6"><button type="button" class="pass-toggle" data-pass="a-pass">Show</button></div></div>
     <button class="btn block" type="submit">Continue</button></form>
     <p style="margin-top:16px;font-size:14px;text-align:center">Already have an account? <a href="#/login" style="color:#0e5c46;font-weight:700">Log in</a></p></div></main>`;
   },
   bind() {
-    document.getElementById('auth-form').addEventListener('submit', (e) => {
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('a-email').value.trim().toLowerCase();
       const users = LS.read('users', []);
@@ -1590,7 +1889,7 @@ routes['signup'] = {
         name: document.getElementById('a-name').value.trim(),
         email,
         phone: document.getElementById('a-phone').value.trim(),
-        pass: document.getElementById('a-pass').value,
+        passHash: await hashPass(document.getElementById('a-pass').value),
         tfaSecret: genTfaSecret(),
       };
       location.hash = '#/setup-2fa';
@@ -1615,13 +1914,13 @@ routes['setup-2fa'] = {
     if (!pendingUser) return;
     const finish = (withTfa) => {
       const users = LS.read('users', []);
-      const nu = { name: pendingUser.name, email: pendingUser.email, phone: pendingUser.phone, pass: pendingUser.pass };
+      const nu = { name: pendingUser.name, email: pendingUser.email, phone: pendingUser.phone, passHash: pendingUser.passHash };
       if (withTfa) nu.tfa = pendingUser.tfaSecret;
       users.push(nu);
       LS.write('users', users);
       LS.write('session', pendingUser.email);
       pendingUser = null;
-      toast(withTfa ? 'Account created — 2FA enabled' : 'Account created — welcome!');
+      toast(withTfa ? 'Account created. 2FA is on' : 'Account created. Welcome!');
       setTimeout(() => { location.hash = '#/'; }, 700);
     };
     document.getElementById('tfa-form').addEventListener('submit', (e) => {
@@ -1629,7 +1928,7 @@ routes['setup-2fa'] = {
       if (verifyTotp(pendingUser.tfaSecret, document.getElementById('tfa-code').value)) finish(true);
       else {
         const er = document.getElementById('form-err');
-        er.textContent = 'Wrong code — check your authenticator app and try again.';
+        er.textContent = 'Wrong code. Check your authenticator app and try again.';
         er.style.display = 'block';
       }
     });
@@ -1662,11 +1961,13 @@ routes['my-ads'] = {
       const del = e.target.closest('[data-del]');
       const sold = e.target.closest('[data-sold]');
       if (del) {
-        if (!confirm('Delete this ad permanently?')) return;
         const id = String(del.dataset.del);
-        if (/^u/.test(id)) LS.write('myads', LS.read('myads', []).filter((a) => String(a.id) !== id));
-        else LS.write('deleted', LS.read('deleted', []).concat([id]));
-        toast('Ad deleted'); navigate();
+        confirmModal('Delete this ad?', 'This removes your ad permanently. You cannot undo this.', 'Delete').then((ok) => {
+          if (!ok) return;
+          if (/^u/.test(id)) LS.write('myads', LS.read('myads', []).filter((a) => String(a.id) !== id));
+          else LS.write('deleted', LS.read('deleted', []).concat([id]));
+          toast('Ad deleted'); navigate();
+        });
       } else if (sold) {
         const id = String(sold.dataset.sold);
         const ad = getAd(id);
@@ -1693,8 +1994,66 @@ routes['favorites'] = {
   },
 };
 
+/* ---------- static info pages ---------- */
+const infoPage = (title, body) => `<main class="wrap"><div class="form-card wide"><h2>${title}</h2>${body}</div></main>`;
+routes['privacy'] = {
+  html() {
+    return infoPage('Privacy policy', `<p class="sub">Last updated: October 2026</p>
+    <h3>What we store</h3>
+    <p>Your account details (name, email, phone) and the ads you post are saved in your own browser's local storage. Sooda does not run its own servers for this version, so your data never leaves your device except when you choose to share it (for example, showing your phone number to a logged-in buyer).</p>
+    <h3>What we do not do</h3>
+    <p>We do not sell your data, run advertising trackers, or share your information with third parties. There are no analytics cookies watching your browsing.</p>
+    <h3>Your control</h3>
+    <p>You can delete your ads at any time from My Ads. Clearing your browser's site data removes everything Sooda stored, including your account.</p>
+    <h3>Contact</h3>
+    <p>Questions about privacy: reach us through the <a href="#/faq">FAQ</a> page.</p>`);
+  },
+};
+routes['terms'] = {
+  html() {
+    return infoPage('Terms of use', `<p class="sub">Last updated: October 2026</p>
+    <h3>The basics</h3>
+    <p>Sooda is a free marketplace for Pakistan. Posting ads, browsing, and bidding cost nothing.</p>
+    <h3>Your responsibilities</h3>
+    <p>Post only items you own or are allowed to sell. Describe them honestly, use your own photos, and set fair prices. Fraud, stolen goods, weapons, and prohibited items are not allowed and will be removed.</p>
+    <h3>Bidding</h3>
+    <p>Bids are expressions of interest, not binding contracts. The seller decides whom to deal with. Sooda does not handle payments or delivery.</p>
+    <h3>Safety</h3>
+    <p>Meet buyers in public places, verify items before paying, and never share bank details or OTP codes with strangers.</p>
+    <h3>Availability</h3>
+    <p>Sooda is provided as is. We may update these terms as the platform grows.</p>`);
+  },
+};
+routes['faq'] = {
+  html() {
+    const qa = [
+      ['Is posting an ad really free?', 'Yes. Posting, browsing, and bidding are all free. There are no hidden charges.'],
+      ['How does bidding work?', 'When posting, tick "Accept bids on this ad". Buyers then place bids above your starting price. The highest bid is shown on your ad, and you contact the bidder directly to close the deal.'],
+      ['Where are my ads and account stored?', 'In your own browser (local storage). That means your ads only appear on the device where you posted them, and clearing browser data removes them.'],
+      ['How do I contact a seller?', 'Open the ad and tap "Show phone number" (you need to be logged in). Then call or message the seller directly.'],
+      ['Is my phone number public?', 'No. It is only shown to logged-in users on your own ad pages.'],
+      ['How do I edit or delete my ad?', 'Go to My Ads, then use Edit or Delete on the ad. Deleting asks for confirmation first.'],
+      ['Which cities does Sooda cover?', 'All of Pakistan. Filter by your city from the location menu.'],
+      ['I forgot my password. What now?', 'Use the "Forgot password" option on the login page to reset it with your registered phone number.'],
+    ];
+    return `<main class="wrap"><section class="section"><h2>Frequently asked questions</h2>
+      <div class="faq">${qa.map(([q, a], i) => `<div class="faq-item"><button class="faq-q" data-faq="${i}">${esc(q)}<span>+</span></button><div class="faq-a" id="faq-a-${i}">${esc(a)}</div></div>`).join('')}</div>
+    </section></main>`;
+  },
+  bind() {
+    document.getElementById('app').addEventListener('click', function h(e) {
+      const q = e.target.closest('[data-faq]');
+      if (!q) return;
+      const a = document.getElementById('faq-a-' + q.dataset.faq);
+      const open = a.classList.toggle('open');
+      q.querySelector('span').textContent = open ? '−' : '+';
+    });
+  },
+};
+
 /* ---------- init ---------- */
 bindFavDelegation();
+initChrome();
 if (!location.hash) location.hash = '#/';
 navigate();
 

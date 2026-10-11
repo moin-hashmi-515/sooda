@@ -359,16 +359,29 @@ function initAcronymHero() {
   const rnd = [];
   for (let i = 0; i < 22; i++) rnd.push({ x: Math.random(), y: Math.random(), r: 2 + Math.random() * 4, sp: 30 + Math.random() * 60, a: 25 + Math.random() * 45, ph: Math.random() * 6.28 });
   let L = null;
-  const layout = () => {
-    const vw = Math.max(50, stage.clientWidth), sh = Math.max(50, stage.clientHeight);
-    const fW = Math.max(15, Math.min(34, vw * 0.045));
-    const fB = Math.max(40, Math.min(76, vw * 0.09));
-    const fM = Math.max(13, Math.min(20, vw * 0.026));
-    meas.font = '800 ' + fW + 'px sans-serif';
+  // Fit text to the stage: shrink until the laid-out line fits (all screens).
+  const measureWords = (px) => {
+    meas.font = '800 ' + px + 'px sans-serif';
     const widths = WORDS.map((w) => meas.measureText(w).width);
     const firstW = WORDS.map((w) => meas.measureText(w[0]).width);
-    const sepW = meas.measureText('•').width + fW * 1.4;
-    const total = widths.reduce((a, b) => a + b, 0) + sepW * 4;
+    const sepW = meas.measureText('•').width + px * 1.4;
+    return { widths, firstW, sepW, total: widths.reduce((a, b) => a + b, 0) + sepW * 4 };
+  };
+  const layout = () => {
+    const vw = Math.max(50, stage.clientWidth), sh = Math.max(50, stage.clientHeight);
+    const avail = vw - 16;
+    let fW = 34, wm = measureWords(fW);
+    while (wm.total > avail && fW > 10) { fW -= 1; wm = measureWords(fW); }
+    meas.font = '800 100px sans-serif';
+    const soodaW100 = meas.measureText('SOODA').width;
+    // include the 0.2*tracking per gap used in the line layout
+    let fB = Math.min(76, avail / (soodaW100 / 100 + 0.8));
+    fB = Math.max(fB, fW * 1.8);
+    meas.font = '700 100px sans-serif';
+    const meanW100 = meas.measureText('Seek • Offers • Order • Deals • Aasaan').width;
+    const fM = Math.max(10, Math.min(20, (avail / meanW100) * 100));
+    const { widths, firstW, sepW } = wm;
+    const total = wm.total;
     const wordX = [], sepX = [];
     let acc = vw / 2 - total / 2;
     WORDS.forEach((w, i) => {

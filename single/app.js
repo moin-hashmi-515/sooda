@@ -206,7 +206,7 @@ function headerHtml() {
 }
 function footerHtml() {
   return `<footer class="site-footer"><div class="footer-grid">
-    <div><h4>Sooda.</h4><p>Pakistan's friendly marketplace. Buy and sell mobiles, cars, property and more.</p></div>
+    <div><h4>Sooda.</h4><p>Pakistan's friendly marketplace. Buy and sell mobiles, cars, property and more.</p><p class="acronym-foot"><b>S</b>eek <b>O</b>ffers, <b>O</b>rder <b>D</b>eals <b>A</b>asaan</p></div>
     <div><h4>Marketplace</h4>${DB.categories.slice(0, 4).map((c) => `<a href="#/" data-cat="${c.slug}">${esc(c.name)}</a>`).join('')}</div>
     <div><h4>Sell</h4><a href="#/post">Post a free ad</a><a href="#/my-ads">My ads</a><a href="#/favorites">Favorites</a></div>
     <div><h4>Account</h4><a href="#/login">Login</a><a href="#/signup">Sign up</a></div>
@@ -360,6 +360,7 @@ routes[''] = {
     return `<section class="hero"><div class="wrap">
       <h1>Buy and sell anything, anywhere in Pakistan</h1>
       <p>Post your ad for free — reach millions of buyers in your city.</p>
+      <p class="acronym"><b>S</b>eek <b>O</b>ffers, <b>O</b>rder <b>D</b>eals <b>A</b>asaan</p>
       <a class="btn amber" href="#/post">+ Post a Free Ad</a>
       <div class="stats"><div><b>${allAds().length * 137}</b><small>Live ads</small></div>
       <div><b>${DB.categories.length}</b><small>Categories</small></div>

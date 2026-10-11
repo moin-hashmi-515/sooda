@@ -144,6 +144,15 @@ img { max-width: 100%; display: block; }
 }
 .hero .stats b { display: block; font-size: 22px; color: var(--amber-500); }
 .hero .stats small { color: #bcd8c9; }
+.hero .acronym {
+  margin: 14px 0 0;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  color: #bcd8c9;
+}
+.hero .acronym b { color: var(--amber-500); font-size: 1.2em; }
+.acronym-foot { margin-top: 10px; font-size: 13px; letter-spacing: 0.04em; color: #9fb3a9; }
+.acronym-foot b { color: var(--amber-500); }
 
 /* ---------- categories : 3D carousel ---------- */
 .section { padding: 30px 0 8px; }

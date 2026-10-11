@@ -336,6 +336,52 @@ img { max-width: 100%; display: block; }
 }
 .ad-card .meta { font-size: 12px; color: var(--muted); }
 .fav-btn {
+/* ---------- bidding ---------- */
+.ad-card .price .bid-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--amber-500);
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: 2px;
+}
+.bid-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-top: 14px;
+}
+.bid-card h3 { font-size: 16px; margin-bottom: 10px; }
+.bid-now {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--green-50);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+}
+.bid-now span { color: #66756f; font-size: 13px; }
+.bid-now b { font-size: 22px; color: var(--green-700); }
+.bid-count { font-size: 13px; color: #66756f; margin-bottom: 12px; }
+.bid-history { margin: 0 0 12px; max-height: 180px; overflow: auto; }
+.bid-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.bid-row:last-child { border-bottom: 0; }
+.bid-row b { color: var(--green-700); }
+.bid-row small { color: #8a9a92; display: block; font-size: 12px; }
+.bid-lead { background: var(--green-50); border-radius: 8px; padding: 8px 10px; }
+#bid-form .field-row { display: flex; gap: 8px; }
+#bid-form input { flex: 1; }
+.bid-note { font-size: 13px; color: #66756f; margin-top: 8px; }
   position: absolute;
   top: 8px;
   right: 8px;
@@ -803,6 +849,19 @@ const allAds = () => {
   return DB.ads.filter((a) => !deleted.includes(String(a.id))).concat(mine);
 };
 const getAd = (id) => allAds().find((a) => String(a.id) === String(id));
+/* bidding helpers: ad.bidding = { bids: [{name, email, amount, at}] }, ad.price = starting bid */
+const bidList = (ad) => (ad.bidding && ad.bidding.bids) || [];
+const currentBid = (ad) => {
+  const bids = bidList(ad);
+  return bids.length ? Math.max(...bids.map((b) => b.amount)) : ad.price;
+};
+const bidHistoryHtml = (ad) => {
+  const bids = [...bidList(ad)].sort((x, y) => y.amount - x.amount).slice(0, 5);
+  if (!bids.length) return '<div class="bid-note">No bids yet — be the first.</div>';
+  return '<div class="bid-history">' + bids.map((b, i) =>
+    `<div class="bid-row${i === 0 ? ' bid-lead' : ''}"><span>${esc(b.name)}<small>${timeAgo(b.at)}</small></span><b>${fmtPrice(b.amount)}</b></div>`
+  ).join('') + '</div>';
+};
 const adSeller = (ad) => {
   if (ad.sellerEmail) {
     const u = LS.read('users', []).find((x) => x.email === ad.sellerEmail);
@@ -1126,7 +1185,7 @@ function adCard(a) {
   return `<div class="ad-card">
     <button class="fav-btn${fav ? ' active' : ''}" data-fav="${a.id}">${fav ? '♥' : '♡'}</button>
     <a href="#/ad?id=${a.id}"><div class="thumb">${thumb}</div>
-    <div class="body"><div class="price">${fmtPrice(a.price)}${a.negotiable ? '<span class="neg">Negotiable</span>' : ''}</div>
+    <div class="body"><div class="price">${fmtPrice(a.price)}${a.negotiable ? '<span class="neg">Negotiable</span>' : ''}${a.bidding ? '<span class="bid-badge">Bidding</span>' : ''}</div>
     <div class="title">${esc(a.title)}</div>
     <div class="meta">${esc(a.location)} · ${timeAgo(a.created_at)}</div></div></a></div>`;
 }
@@ -1136,6 +1195,7 @@ routes[''] = {
   html() {
     const cats = DB.categories.map((c) =>
       `<a class="cat-face" href="#/category?slug=${c.slug}" aria-label="${esc(c.name)}">${icon(c.icon)}<span>${esc(c.name)}</span></a>`).join('');
+    const bidAds = allAds().filter((a) => a.bidding).slice(0, 8);
     return `<section class="hero hero-anim"><div class="wrap">
       <div class="ac-stage" id="acStage" role="img" aria-label="SOODA — Seek Offers, Order Deals Aasaan"><canvas id="acFx"></canvas></div>
       <div class="hero-fade">
@@ -1143,6 +1203,7 @@ routes[''] = {
       </div></div></section>
     <main class="wrap"><section class="section"><h2>Browse categories</h2>
       <div class="cat-carousel" id="cat-carousel"><div class="cat-ring" id="cat-ring">${cats}</div></div></section>
+    ${bidAds.length ? `<section class="section"><h2>Open for bidding</h2><div class="ads-grid">${bidAds.map(adCard).join('')}</div></section>` : ''}
     <section class="section"><div class="browse">
       <aside class="filters"><h3>Filters</h3>
         <label>Category</label><select id="f-category"><option value="">All categories</option>
@@ -1284,6 +1345,18 @@ routes['ad'] = {
     const mine = u && ad.sellerEmail && ad.sellerEmail === u.email;
     const fav = isFav(ad.id);
     const similar = allAds().filter((a) => String(a.id) !== String(ad.id) && a.category.slug === ad.category.slug).slice(0, 4);
+    const bidPanel = (() => {
+      if (!ad.bidding) return '';
+      const cb = currentBid(ad), n = bidList(ad).length;
+      let action;
+      if (mine) action = `<div class="bid-note">${n ? `You have ${n} bid${n > 1 ? 's' : ''} on this ad.` : 'No bids yet — share your ad to attract bids.'}</div>`;
+      else if (u) action = `<form id="bid-form"><div class="field-row"><input id="bid-amount" type="number" min="${cb + 1}" placeholder="Your bid (Rs)" required><button class="btn amber" type="submit">Bid</button></div><div class="bid-note">Must be higher than ${fmtPrice(cb)}</div><div class="form-err" id="bid-err"></div></form>`;
+      else action = `<a class="btn amber block" href="#/login?next=${encodeURIComponent(location.hash)}">Login to place a bid</a>`;
+      return `<div class="bid-card"><h3>Bidding</h3>
+        <div class="bid-now"><span>${n ? 'Current bid' : 'Starting bid'}</span><b>${fmtPrice(cb)}</b></div>
+        <div class="bid-count">${n} bid${n === 1 ? '' : 's'} so far</div>
+        ${bidHistoryHtml(ad)}${action}</div>`;
+    })();
     return `<main class="wrap"><div class="ad-detail"><div>
       <div class="gallery"><div class="main">${imgs[0] ? `<img id="main-img" src="${imgs[0]}" alt="">` : ''}</div>
       ${thumbs ? `<div class="thumbs" id="thumbs">${thumbs}</div>` : ''}</div>
@@ -1301,7 +1374,7 @@ routes['ad'] = {
       <div class="loc">${esc(ad.location)} · ${timeAgo(ad.created_at)}</div>
       <div class="action-row"><button class="btn ghost block${fav ? ' active' : ''}" id="fav-toggle" data-fav="${ad.id}" data-fav-page="0">${fav ? '♥ Saved' : '♡ Save'}</button></div>
       ${mine ? `<div class="action-row"><a class="btn ghost block" href="#/post?edit=${ad.id}">Edit</a></div>` : ''}
-    </div><div class="seller-card"><div class="avatar">${esc(seller.name[0].toUpperCase())}</div>
+    </div>${bidPanel}<div class="seller-card"><div class="avatar">${esc(seller.name[0].toUpperCase())}</div>
       <b>${esc(seller.name)}</b><div style="color:#66756f;font-size:13px;margin-bottom:12px">Seller</div>
       ${u ? `<button class="btn amber block" id="show-phone">Show phone number</button>
         <div id="phone-num" style="display:none;font-size:22px;font-weight:800;margin-top:10px">${esc(seller.phone)}</div>`
@@ -1310,7 +1383,7 @@ routes['ad'] = {
     ${similar.length ? `<section class="section"><h2>Similar ads</h2><div class="ads-grid">${similar.map(adCard).join('')}</div></section>` : ''}
     </main>`;
   },
-  bind() {
+  bind(params) {
     const main = document.getElementById('main-img');
     const th = document.getElementById('thumbs');
     if (th && main) th.querySelectorAll('img').forEach((t) => t.addEventListener('click', () => {
@@ -1321,6 +1394,24 @@ routes['ad'] = {
     if (sp) sp.addEventListener('click', () => {
       document.getElementById('phone-num').style.display = '';
       sp.style.display = 'none';
+    });
+    const bidForm = document.getElementById('bid-form');
+    if (bidForm) bidForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = currentUser();
+      const err = document.getElementById('bid-err');
+      if (!u) { location.hash = '#/login?next=' + encodeURIComponent(location.hash); return; }
+      const myads = LS.read('myads', []);
+      const target = myads.find((a) => String(a.id) === String(params.get('id')));
+      if (!target || !target.bidding) { toast('Bidding is closed on this ad'); return; }
+      if (target.sellerEmail === u.email) { toast("You can't bid on your own ad"); return; }
+      const amt = Math.round(Number(document.getElementById('bid-amount').value) || 0);
+      const cb = currentBid(target);
+      if (amt <= cb) { err.textContent = 'Your bid must be higher than ' + fmtPrice(cb); return; }
+      target.bidding.bids.push({ name: u.name, email: u.email, amount: amt, at: new Date().toISOString().slice(0, 19).replace('T', ' ') });
+      LS.write('myads', myads);
+      toast('Bid placed!');
+      navigate();
     });
   },
 };
@@ -1344,11 +1435,12 @@ routes['post'] = {
       ${DB.locations.map((l) => `<option ${existing && existing.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div></div>
       <div class="field"><label>Ad title *</label><input id="f-title" maxlength="80" required value="${esc(existing ? existing.title : '')}" placeholder="e.g. iPhone 13 Pro 256GB, PTA approved"></div>
       <div class="field"><label>Description *</label><textarea id="f-desc" required placeholder="Describe your item...">${esc(existing ? existing.description : '')}</textarea></div>
-      <div class="field-row"><div class="field"><label>Price (Rs) *</label><input id="f-price" type="number" min="0" required value="${existing ? existing.price : ''}" placeholder="e.g. 85000"></div>
+      <div class="field-row"><div class="field"><label id="f-pricelabel">Price (Rs) *</label><input id="f-price" type="number" min="0" required value="${existing ? existing.price : ''}" placeholder="e.g. 85000"></div>
       <div class="field"><label>Condition</label><select id="f-cond">
       <option value="used"${existing && existing.condition === 'used' ? ' selected' : ''}>Used</option>
       <option value="new"${existing && existing.condition === 'new' ? ' selected' : ''}>New</option></select></div></div>
       <div class="field"><label class="check-row"><input type="checkbox" id="f-neg" style="width:auto"${existing && existing.negotiable ? ' checked' : ''}> Price is negotiable</label></div>
+      <div class="field"><label class="check-row"><input type="checkbox" id="f-bid" style="width:auto"${existing && existing.bidding ? ' checked' : ''}> Accept bids on this ad</label><div class="hint">Buyers bid above your price — highest bid shows on your ad.</div></div>
       ${existing ? '' : `<div class="field"><label>Photos (up to 6)</label><input id="f-imgs" type="file" accept="image/*" multiple><div class="hint">Stored in your browser.</div><div class="img-preview" id="img-prev"></div></div>`}
       <button class="btn amber block" type="submit">${existing ? 'Save changes' : 'Post ad now'}</button>
     </form></div></main>`;
@@ -1359,6 +1451,11 @@ routes['post'] = {
     const editId = params.get('edit');
     const prev = document.getElementById('img-prev');
     const fi = document.getElementById('f-imgs');
+    const bidBox = document.getElementById('f-bid');
+    const priceLabel = document.getElementById('f-pricelabel');
+    const syncBidLabel = () => { priceLabel.textContent = bidBox.checked ? 'Starting bid (Rs) *' : 'Price (Rs) *'; };
+    bidBox.addEventListener('change', syncBidLabel);
+    syncBidLabel();
     if (fi) fi.addEventListener('change', () => {
       prev.innerHTML = '';
       [...fi.files].slice(0, 6).forEach((f) => {
@@ -1376,6 +1473,9 @@ routes['post'] = {
         price: Math.max(0, Math.round(Number(document.getElementById('f-price').value) || 0)),
         condition: document.getElementById('f-cond').value,
         negotiable: document.getElementById('f-neg').checked ? 1 : 0,
+        bidding: document.getElementById('f-bid').checked
+          ? { bids: (existing && existing.bidding && existing.bidding.bids) || [] }
+          : null,
         location: document.getElementById('f-loc').value,
         category: { id: cat.id, name: cat.name, slug: cat.slug },
       };

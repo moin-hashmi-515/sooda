@@ -153,13 +153,32 @@ img { max-width: 100%; display: block; }
 }
 .hero .stats b { display: block; font-size: 22px; color: var(--amber-500); }
 .hero .stats small { color: #bcd8c9; }
-.hero .acronym {
-  margin: 14px 0 0;
-  font-size: 15px;
-  letter-spacing: 0.05em;
-  color: #bcd8c9;
+/* ---------- hero acronym animation ---------- */
+.hero-anim { position: relative; overflow: hidden; }
+.ac-stage {
+  position: relative;
+  height: 290px;
+  margin: 6px auto 4px;
+  max-width: 900px;
 }
-.hero .acronym b { color: var(--amber-500); font-size: 1.2em; }
+#acFx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ac-el {
+  position: absolute;
+  left: 0; top: 0;
+  white-space: nowrap;
+  font-weight: 800;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.ac-w { color: #fff; }
+.ac-fl { color: #fff; transition: color 0.35s; }
+.ac-fl.hi { color: var(--amber-500); }
+.ac-sep { color: #3d6b5c; font-weight: 800; }
+.ac-mean { color: #fff; font-weight: 700; letter-spacing: 0.05em; }
+.hero-fade { animation: heroFade 0.9s ease 0.7s both; }
+@keyframes heroFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) { .ac-stage { height: 330px; } }
+@media (prefers-reduced-motion: reduce) { .hero-fade { animation: none; } }
 .acronym-foot { margin-top: 10px; font-size: 13px; letter-spacing: 0.04em; color: #9fb3a9; }
 .acronym-foot b { color: var(--amber-500); }
 
@@ -952,6 +971,131 @@ function initCatCarousel() {
   if (running) window.__catRaf = requestAnimationFrame(loop);
 }
 
+/* ---------- hero acronym animation ----------
+   Mirrors the intro video: meanings on one line -> first letters ignite
+   -> rest falls away -> letters gather into SOODA -> meanings return. */
+function initAcronymHero() {
+  const stage = document.getElementById('acStage');
+  if (!stage) return;
+  if (window.__acRaf) { cancelAnimationFrame(window.__acRaf); window.__acRaf = 0; }
+  const canvas = document.getElementById('acFx');
+  const ctx = canvas.getContext('2d');
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const WORDS = ['Seek', 'Offers', 'Order', 'Deals', 'Aasaan'];
+  const AMBER = '#f2a007';
+  stage.querySelectorAll('.ac-el').forEach((e) => e.remove());
+  const mk = (cls, text) => {
+    const s = document.createElement('span');
+    s.className = 'ac-el ' + cls;
+    s.textContent = text;
+    s.setAttribute('aria-hidden', 'true');
+    stage.appendChild(s);
+    return s;
+  };
+  const flEls = WORDS.map((w) => mk('ac-fl', w[0]));
+  const restEls = WORDS.map((w) => mk('ac-w', w.slice(1)));
+  const sepEls = [0, 1, 2, 3].map(() => mk('ac-sep', '•'));
+  const meanEl = mk('ac-mean', 'Seek  •  Offers  •  Order  •  Deals  •  Aasaan');
+  const meas = document.createElement('canvas').getContext('2d');
+  const rnd = [];
+  for (let i = 0; i < 22; i++) rnd.push({ x: Math.random(), y: Math.random(), r: 2 + Math.random() * 4, sp: 30 + Math.random() * 60, a: 25 + Math.random() * 45, ph: Math.random() * 6.28 });
+  let L = null;
+  const layout = () => {
+    const vw = Math.max(50, stage.clientWidth), sh = Math.max(50, stage.clientHeight);
+    const fW = Math.max(15, Math.min(34, vw * 0.045));
+    const fB = Math.max(40, Math.min(76, vw * 0.09));
+    const fM = Math.max(13, Math.min(20, vw * 0.026));
+    meas.font = '800 ' + fW + 'px sans-serif';
+    const widths = WORDS.map((w) => meas.measureText(w).width);
+    const firstW = WORDS.map((w) => meas.measureText(w[0]).width);
+    const sepW = meas.measureText('•').width + fW * 1.4;
+    const total = widths.reduce((a, b) => a + b, 0) + sepW * 4;
+    const wordX = [], sepX = [];
+    let acc = vw / 2 - total / 2;
+    WORDS.forEach((w, i) => {
+      wordX.push(acc + widths[i] / 2); acc += widths[i];
+      if (i < 4) { sepX.push(acc + sepW / 2); acc += sepW; }
+    });
+    meas.font = '800 ' + fB + 'px sans-serif';
+    const lw = 'SOODA'.split('').map((c) => meas.measureText(c).width);
+    const track = fB * 0.2;
+    const lt = lw.reduce((a, b) => a + b, 0) + track * 4;
+    const lineX = [];
+    let a2 = vw / 2 - lt / 2;
+    lw.forEach((w) => { lineX.push(a2 + w / 2); a2 += w + track; });
+    L = { vw, sh, fW, fB, wordX, sepX, lineX, widths, firstW,
+          wordY: sh * 0.44, lineY: sh * 0.47, meanY: sh * 0.70, sWord: fW / fB };
+    flEls.forEach((e) => e.style.fontSize = fB + 'px');
+    restEls.forEach((e) => e.style.fontSize = fW + 'px');
+    sepEls.forEach((e) => e.style.fontSize = fW + 'px');
+    meanEl.style.fontSize = fM + 'px';
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = vw * dpr; canvas.height = sh * dpr;
+  };
+  layout();
+  const P1 = 2.0, P2 = 3.2, P3 = 4.6, MEAN = 5.9;
+  const clamp01 = (v) => Math.max(0, Math.min(1, v));
+  const smooth = (u) => u * u * (3 - 2 * u);
+  const setEl = (el, cx, cy, s, alpha) => {
+    el.style.transform = 'translate(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px) translate(-50%,-50%) scale(' + s.toFixed(3) + ')';
+    el.style.opacity = alpha.toFixed(2);
+  };
+  const paintFx = (t) => {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, L.vw, L.sh);
+    rnd.forEach((p) => {
+      const y = (((p.y * L.sh - t * p.sp) % (L.sh + 80)) + L.sh + 80) % (L.sh + 80) - 40;
+      const x = p.x * L.vw + 24 * Math.sin(t * 0.7 + p.ph);
+      ctx.fillStyle = 'rgba(242,160,7,' + (p.a / 255).toFixed(2) + ')';
+      ctx.beginPath(); ctx.arc(x, y, p.r, 0, 6.283); ctx.fill();
+    });
+    const cyc = (t % 3) / 3;
+    if (cyc < 0.4 && !reduced) {
+      const u = 1 - Math.pow(1 - cyc / 0.4, 3);
+      const sx = -320 + (L.vw + 640) * u;
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.beginPath();
+      ctx.moveTo(sx, 0); ctx.lineTo(sx + 150, 0); ctx.lineTo(sx - 170, L.sh); ctx.lineTo(sx - 320, L.sh);
+      ctx.closePath(); ctx.fill();
+    }
+  };
+  const paint = (t) => {
+    paintFx(t);
+    WORDS.forEach((w, i) => {
+      const a1 = clamp01((t - i * 0.12) / 0.5);
+      const hi = clamp01((t - P1 - i * 0.08) / 0.4);
+      const ro = clamp01((t - P2) / 0.7);
+      const fle = smooth(clamp01((t - P3 - i * 0.06) / 0.8));
+      const rise = (1 - a1) * 24;
+      const yy = L.wordY + rise;
+      if (i < 4) setEl(sepEls[i], L.sepX[i], yy, 1, a1 * (1 - ro));
+      const restA = a1 * (1 - 0.65 * hi) * (1 - ro);
+      const rcx = L.wordX[i] - L.widths[i] / 2 + L.firstW[i] + (L.widths[i] - L.firstW[i]) / 2;
+      setEl(restEls[i], rcx, yy - 46 * ro, 1, restA);
+      const s = L.sWord * (1 + 0.3 * hi) * (1 - fle) + fle;
+      const lx0 = L.wordX[i] - L.widths[i] / 2 + L.firstW[i] / 2;
+      const bob = (hi >= 1 && fle < 1 && !reduced) ? 8 * Math.sin(2 * Math.PI * 0.9 * t + i * 1.1) : 0;
+      const holdBob = (fle >= 1 && !reduced) ? 6 * Math.sin(2 * Math.PI * 0.9 * t + i * 1.1) : 0;
+      setEl(flEls[i], lx0 * (1 - fle) + L.lineX[i] * fle,
+        (yy + bob) * (1 - fle) + (L.lineY + holdBob) * fle, s, a1);
+      flEls[i].classList.toggle('hi', hi > 0.4);
+    });
+    const mu = clamp01((t - MEAN) / 0.6);
+    setEl(meanEl, L.vw / 2, L.meanY + 30 * (1 - mu), 1, mu);
+  };
+  const onResize = () => {
+    if (!stage.isConnected) { window.removeEventListener('resize', onResize); return; }
+    layout(); paint(tNow());
+  };
+  window.addEventListener('resize', onResize);
+  const t0 = performance.now();
+  const tNow = () => (performance.now() - t0) / 1000;
+  if (reduced) { paint(10); return; }
+  const loop = () => { paint(tNow()); window.__acRaf = requestAnimationFrame(loop); };
+  window.__acRaf = requestAnimationFrame(loop);
+}
+
 const routes = {};
 function navigate() {
   const { path, params } = parseHash();
@@ -979,14 +1123,15 @@ routes[''] = {
   html() {
     const cats = DB.categories.map((c) =>
       `<a class="cat-face" href="#/category?slug=${c.slug}" aria-label="${esc(c.name)}">${icon(c.icon)}<span>${esc(c.name)}</span></a>`).join('');
-    return `<section class="hero"><div class="wrap">
+    return `<section class="hero hero-anim"><div class="wrap">
+      <div class="ac-stage" id="acStage" role="img" aria-label="SOODA — Seek Offers, Order Deals Aasaan"><canvas id="acFx"></canvas></div>
+      <div class="hero-fade">
       <h1>Buy and sell anything, anywhere in Pakistan</h1>
       <p>Post your ad for free — reach millions of buyers in your city.</p>
-      <p class="acronym"><b>S</b>eek <b>O</b>ffers, <b>O</b>rder <b>D</b>eals <b>A</b>asaan</p>
       <a class="btn amber" href="#/post">+ Post a Free Ad</a>
       <div class="stats"><div><b>${allAds().length * 137}</b><small>Live ads</small></div>
       <div><b>${DB.categories.length}</b><small>Categories</small></div>
-      <div><b>100%</b><small>Free to post</small></div></div></div></section>
+      <div><b>100%</b><small>Free to post</small></div></div></div></div></section>
     <main class="wrap"><section class="section"><h2>Browse categories</h2>
       <div class="cat-carousel" id="cat-carousel"><div class="cat-ring" id="cat-ring">${cats}</div></div></section>
     <section class="section"><div class="browse">
@@ -1014,6 +1159,7 @@ routes[''] = {
       </div></div></section></main>`;
   },
   bind() {
+    initAcronymHero();
     initCatCarousel();
     const render = () => {
       const f = filters;

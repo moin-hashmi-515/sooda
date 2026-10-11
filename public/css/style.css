@@ -145,29 +145,71 @@ img { max-width: 100%; display: block; }
 .hero .stats b { display: block; font-size: 22px; color: var(--amber-500); }
 .hero .stats small { color: #bcd8c9; }
 
-/* ---------- categories ---------- */
+/* ---------- categories : 3D carousel ---------- */
 .section { padding: 30px 0 8px; }
 .section h2 { font-size: 22px; margin-bottom: 14px; }
-.cat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 12px;
-}
-.cat-card {
-  background: var(--card);
-  border: 1px solid var(--line);
+.cat-carousel {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
   border-radius: var(--radius);
-  padding: 18px 8px;
+  background: linear-gradient(180deg, #0e5c46 0%, #0b3d2e 100%);
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-ring { position: absolute; inset: 0; }
+.cat-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 118px;
+  height: 152px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 8px;
   text-align: center;
-  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  color: #1a2b24;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: break-word;
+  will-change: transform, opacity;
 }
-.cat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow);
-  border-color: var(--green-600);
+.cat-face:hover { text-decoration: none; }
+.cat-face svg {
+  width: 32px;
+  height: 32px;
+  color: var(--green-700);
+  flex: none;
 }
-.cat-card svg { width: 34px; height: 34px; color: var(--green-700); }
-.cat-card div { font-size: 13px; margin-top: 8px; font-weight: 600; }
+@media (min-width: 640px) {
+  .cat-carousel { height: 350px; }
+  .cat-face {
+    width: 150px;
+    height: 192px;
+    font-size: 12.5px;
+    border-radius: 16px;
+  }
+  .cat-face svg { width: 38px; height: 38px; }
+}
+@media (min-width: 1024px) {
+  .cat-carousel { height: 390px; }
+  .cat-face {
+    width: 172px;
+    height: 218px;
+    font-size: 13px;
+    border-radius: 18px;
+  }
+  .cat-face svg { width: 42px; height: 42px; }
+}
 
 /* ---------- ad cards ---------- */
 .ads-grid {

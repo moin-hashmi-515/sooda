@@ -248,6 +248,88 @@ function parseHash() {
   const qi = h.indexOf('?');
   return { path: qi === -1 ? h : h.slice(0, qi), params: new URLSearchParams(qi === -1 ? '' : h.slice(qi + 1)) };
 }
+/* ---------- 3D category carousel ----------
+   Same stepped timing as the promo video: each category holds still
+   for 1s, then the ring spins one step (0.7s out + 0.7s in). */
+function initCatCarousel() {
+  const viewport = document.getElementById('cat-carousel');
+  const ring = document.getElementById('cat-ring');
+  if (!viewport || !ring) return;
+  if (window.__catRaf) {
+    cancelAnimationFrame(window.__catRaf);
+    window.__catRaf = 0;
+  }
+  const faces = Array.from(ring.children);
+  const n = faces.length;
+  if (!n) return;
+  const reduced =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FOCAL = 950;
+  let R = 300;
+  const measure = () => {
+    R = Math.max(170, Math.min(440, viewport.clientWidth * 0.42));
+  };
+  measure();
+  const HOLD = 1000, OUT = 700, IN = 700, STEP = HOLD + OUT + IN;
+  let t0 = performance.now(), pausedAt = 0, running = !reduced;
+  const paint = (now) => {
+    const t = (now - t0) % (n * STEP);
+    const step = Math.floor(t / STEP);
+    const fin = t % STEP;
+    let e;
+    if (fin < HOLD) {
+      e = step;
+    } else {
+      const u = (fin - HOLD) / (OUT + IN);
+      e = step + u * u * (3 - 2 * u);
+    }
+    const rot = (2 * Math.PI * e) / n;
+    const dist = R + 940;
+    for (let i = 0; i < n; i++) {
+      const th = (2 * Math.PI * i) / n + rot;
+      const x = R * Math.sin(th), z = R * Math.cos(th);
+      const s = FOCAL / (dist - z);
+      const front = (z + R) / (2 * R);
+      const el = faces[i];
+      el.style.transform =
+        'translate(-50%,-50%) translate(' + (x * s).toFixed(1) + 'px,0) scale(' +
+        s.toFixed(3) + ')';
+      el.style.opacity = (0.3 + 0.7 * front).toFixed(2);
+      el.style.zIndex = String(Math.round(front * 1000));
+    }
+  };
+  const loop = (now) => {
+    paint(now);
+    if (running) window.__catRaf = requestAnimationFrame(loop);
+  };
+  const onResize = () => {
+    if (!viewport.isConnected) {
+      window.removeEventListener('resize', onResize);
+      return;
+    }
+    measure();
+  };
+  window.addEventListener('resize', onResize);
+  viewport.addEventListener('pointerenter', () => {
+    if (!running || reduced) return;
+    running = false;
+    pausedAt = performance.now();
+    if (window.__catRaf) {
+      cancelAnimationFrame(window.__catRaf);
+      window.__catRaf = 0;
+    }
+  });
+  viewport.addEventListener('pointerleave', () => {
+    if (running || reduced) return;
+    t0 += performance.now() - pausedAt;
+    running = true;
+    window.__catRaf = requestAnimationFrame(loop);
+  });
+  paint(t0);
+  if (running) window.__catRaf = requestAnimationFrame(loop);
+}
+
 const routes = {};
 function navigate() {
   const { path, params } = parseHash();
@@ -274,7 +356,7 @@ function adCard(a) {
 routes[''] = {
   html() {
     const cats = DB.categories.map((c) =>
-      `<a class="cat-card" href="#/" data-catlink="${c.slug}">${icon(c.icon)}<div>${esc(c.name)}</div></a>`).join('');
+      `<a class="cat-face" href="#/" data-catlink="${c.slug}" aria-label="${esc(c.name)}">${icon(c.icon)}<span>${esc(c.name)}</span></a>`).join('');
     return `<section class="hero"><div class="wrap">
       <h1>Buy and sell anything, anywhere in Pakistan</h1>
       <p>Post your ad for free — reach millions of buyers in your city.</p>
@@ -283,7 +365,7 @@ routes[''] = {
       <div><b>${DB.categories.length}</b><small>Categories</small></div>
       <div><b>100%</b><small>Free to post</small></div></div></div></section>
     <main class="wrap"><section class="section"><h2>Browse categories</h2>
-      <div class="cat-grid">${cats}</div></section>
+      <div class="cat-carousel" id="cat-carousel"><div class="cat-ring" id="cat-ring">${cats}</div></div></section>
     <section class="section"><div class="browse">
       <aside class="filters"><h3>Filters</h3>
         <label>Category</label><select id="f-category"><option value="">All categories</option>
@@ -312,6 +394,7 @@ routes[''] = {
     document.querySelectorAll('[data-catlink]').forEach((a) => a.addEventListener('click', () => {
       filters = { q: '', category: a.dataset.catlink, location: '', condition: 'any', min: '', max: '', sort: 'newest' };
     }));
+    initCatCarousel();
     const render = () => {
       const f = filters;
       let list = allAds().filter((a) => (a.status || 'active') === 'active');

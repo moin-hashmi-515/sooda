@@ -498,12 +498,8 @@ routes[''] = {
     return `<section class="hero hero-anim"><div class="wrap">
       <div class="ac-stage" id="acStage" role="img" aria-label="SOODA — Seek Offers, Order Deals Aasaan"><canvas id="acFx"></canvas></div>
       <div class="hero-fade">
-      <h1>Buy and sell anything, anywhere in Pakistan</h1>
-      <p>Post your ad for free — reach millions of buyers in your city.</p>
       <a class="btn amber" href="#/post">+ Post a Free Ad</a>
-      <div class="stats"><div><b>${allAds().length * 137}</b><small>Live ads</small></div>
-      <div><b>${DB.categories.length}</b><small>Categories</small></div>
-      <div><b>100%</b><small>Free to post</small></div></div></div></div></section>
+      </div></div></section>
     <main class="wrap"><section class="section"><h2>Browse categories</h2>
       <div class="cat-carousel" id="cat-carousel"><div class="cat-ring" id="cat-ring">${cats}</div></div></section>
     <section class="section"><div class="browse">

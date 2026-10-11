@@ -356,7 +356,7 @@ function adCard(a) {
 routes[''] = {
   html() {
     const cats = DB.categories.map((c) =>
-      `<a class="cat-face" href="#/" data-catlink="${c.slug}" aria-label="${esc(c.name)}">${icon(c.icon)}<span>${esc(c.name)}</span></a>`).join('');
+      `<a class="cat-face" href="#/category?slug=${c.slug}" aria-label="${esc(c.name)}">${icon(c.icon)}<span>${esc(c.name)}</span></a>`).join('');
     return `<section class="hero"><div class="wrap">
       <h1>Buy and sell anything, anywhere in Pakistan</h1>
       <p>Post your ad for free — reach millions of buyers in your city.</p>
@@ -391,9 +391,6 @@ routes[''] = {
       </div></div></section></main>`;
   },
   bind() {
-    document.querySelectorAll('[data-catlink]').forEach((a) => a.addEventListener('click', () => {
-      filters = { q: '', category: a.dataset.catlink, location: '', condition: 'any', min: '', max: '', sort: 'newest' };
-    }));
     initCatCarousel();
     const render = () => {
       const f = filters;
@@ -425,6 +422,71 @@ routes[''] = {
       navigate();
     });
     document.getElementById('sort').addEventListener('change', (e) => { filters.sort = e.target.value; render(); });
+    render();
+  },
+};
+
+/* ---------- category page ---------- */
+routes['category'] = {
+  html(params) {
+    const cat = DB.categories.find((c) => c.slug === params.get('slug'));
+    if (!cat) return `<main class="wrap"><div class="empty" style="margin:30px 0"><h3>Category not found</h3><a class="btn" href="#/">Back to home</a></div></main>`;
+    const others = DB.categories.filter((c) => c.slug !== cat.slug).map((c) =>
+      `<a href="#/category?slug=${c.slug}">${icon(c.icon)}${esc(c.name)}</a>`).join('');
+    return `<main class="wrap">
+      <nav class="crumbs"><a href="#/">Home</a> &rsaquo; ${esc(cat.name)}</nav>
+      <section class="cat-hero"><div class="cat-hero-icon">${icon(cat.icon)}</div>
+        <div><h1>${esc(cat.name)}</h1><p id="cat-count"></p></div>
+        <a class="btn amber" href="#/post?cat=${cat.slug}">+ Post a Free Ad</a></section>
+      <section class="section"><div class="browse">
+        <aside class="filters"><h3>Search ${esc(cat.name)}</h3>
+          <label>Keywords</label><input id="cf-q" placeholder="e.g. iPhone, Honda...">
+          <label>Location</label><select id="cf-location"><option value="">All Pakistan</option>
+          ${DB.locations.map((l) => `<option>${esc(l)}</option>`).join('')}</select>
+          <label>Condition</label><select id="cf-condition">
+          <option value="any">Any</option><option value="new">New</option><option value="used">Used</option></select>
+          <label>Price range (Rs)</label><div class="price-row">
+          <input id="cf-min" type="number" placeholder="Min"><input id="cf-max" type="number" placeholder="Max"></div>
+          <label>Sort</label><select id="cf-sort">
+          <option value="newest">Newest first</option>
+          <option value="price_asc">Price: low to high</option>
+          <option value="price_desc">Price: high to low</option></select>
+          <button class="btn block" id="cf-apply" style="margin-top:16px">Apply</button>
+          <button class="btn ghost block" id="cf-clear" style="margin-top:8px">Clear</button>
+        </aside>
+        <div class="results"><div class="ads-grid" id="cat-grid"></div></div>
+      </div></section>
+      <section class="section"><h2>Other categories</h2><div class="cat-chips">${others}</div></section>
+    </main>`;
+  },
+  bind(params) {
+    const cat = DB.categories.find((c) => c.slug === params.get('slug'));
+    if (!cat) return;
+    const cf = { q: '', location: '', condition: 'any', min: '', max: '', sort: 'newest' };
+    const render = () => {
+      let list = allAds().filter((a) => (a.status || 'active') === 'active' && a.category.slug === cat.slug);
+      const total = list.length;
+      if (cf.q) { const q = cf.q.toLowerCase(); list = list.filter((a) => (a.title + ' ' + a.description).toLowerCase().includes(q)); }
+      if (cf.location) list = list.filter((a) => a.location === cf.location);
+      if (cf.condition !== 'any') list = list.filter((a) => a.condition === cf.condition);
+      if (cf.min !== '') list = list.filter((a) => a.price >= Number(cf.min));
+      if (cf.max !== '') list = list.filter((a) => a.price <= Number(cf.max));
+      list.sort((a, b) => cf.sort === 'price_asc' ? a.price - b.price : cf.sort === 'price_desc' ? b.price - a.price : 0);
+      document.getElementById('cat-grid').innerHTML = list.length ? list.map(adCard).join('')
+        : `<div class="empty" style="grid-column:1/-1"><h3>No ads in ${esc(cat.name)} yet</h3><p>Be the first — post your ad for free.</p><a class="btn amber" href="#/post?cat=${cat.slug}">+ Post a Free Ad</a></div>`;
+      document.getElementById('cat-count').textContent =
+        `${total} ad${total === 1 ? '' : 's'} · Buy and sell ${cat.name.toLowerCase()} across Pakistan`;
+    };
+    document.getElementById('cf-apply').addEventListener('click', () => {
+      cf.q = document.getElementById('cf-q').value.trim();
+      cf.location = document.getElementById('cf-location').value;
+      cf.condition = document.getElementById('cf-condition').value;
+      cf.min = document.getElementById('cf-min').value;
+      cf.max = document.getElementById('cf-max').value;
+      cf.sort = document.getElementById('cf-sort').value;
+      render();
+    });
+    document.getElementById('cf-clear').addEventListener('click', () => { navigate(); });
     render();
   },
 };
@@ -492,13 +554,14 @@ routes['post'] = {
     if (!u) { setTimeout(() => { location.hash = '#/login?next=' + encodeURIComponent(location.hash); }, 0); return '<main class="wrap"><div class="empty" style="margin:30px 0">Please log in...</div></main>'; }
     const editId = params.get('edit');
     const existing = editId ? LS.read('myads', []).find((a) => String(a.id) === String(editId)) : null;
+    const preCat = params.get('cat');
     return `<main class="wrap"><div class="form-card wide">
     <h2>${existing ? 'Edit your ad' : 'Post your ad'}</h2>
     <p class="sub">${existing ? 'Update the details below.' : "It's free — your ad goes live instantly."}</p>
     <div class="form-err" id="form-err"></div>
     <form id="ad-form">
       <div class="field-row"><div class="field"><label>Category *</label><select id="f-cat">
-      ${DB.categories.map((c) => `<option value="${c.slug}" ${existing && existing.category.slug === c.slug ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select></div>
+      ${DB.categories.map((c) => `<option value="${c.slug}"${(existing ? existing.category.slug === c.slug : preCat === c.slug) ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</select></div>
       <div class="field"><label>Location *</label><select id="f-loc">
       ${DB.locations.map((l) => `<option ${existing && existing.location === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div></div>
       <div class="field"><label>Ad title *</label><input id="f-title" maxlength="80" required value="${esc(existing ? existing.title : '')}" placeholder="e.g. iPhone 13 Pro 256GB, PTA approved"></div>
